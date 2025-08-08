@@ -16,6 +16,8 @@ import com.transporthc.repository.BaseRepo;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
+import static com.transporthc.entity.expenses.QExpenseAdvancesEntity.expenseAdvancesEntity;
+import static com.transporthc.entity.user.QUserEntity.userEntity;
 public class ExpenseAdvanceRepoImpl extends BaseRepo implements ExpenseAdvancesRepoCustom{
     public ExpenseAdvanceRepoImpl(EntityManager entityManager){
         super(entityManager);
@@ -23,26 +25,26 @@ public class ExpenseAdvanceRepoImpl extends BaseRepo implements ExpenseAdvancesR
 
     private ConstructorExpression<ExpensesAdvancesDto> constructorExpression() {
         return Projections.constructor(ExpensesAdvancesDto.class,
-                expenseAdvances.id.as("id"),
-                expenseAdvances.driverId.as("driverId"),
-                JPAExpressions.select(user.fullName.as("driverName"))
-                        .from(user)
-                        .where(expenseAdvances.driverId.eq(user.id)),
-                expenseAdvances.period.as("period"),
-                expenseAdvances.advance.as("advance"),
-                expenseAdvances.remainingBalance.coalesce(0f).as("remainingBalance"),
-                expenseAdvances.note.coalesce("").as("note"),
-                expenseAdvances.createdAt.as("createdAt"),
-                expenseAdvances.updatedAt.as("updatedAt")
+                expenseAdvancesEntity.id.as("id"),
+                expenseAdvancesEntity.driverId.as("driverId"),
+                JPAExpressions.select(userEntity.fullName.as("driverName"))
+                        .from(userEntity)
+                        .where(expenseAdvancesEntity.driverId.eq(userEntity.id)),
+                expenseAdvancesEntity.period.as("period"),
+                expenseAdvancesEntity.advance.as("advance"),
+                expenseAdvancesEntity.remainingBalance.coalesce(0f).as("remainingBalance"),
+                expenseAdvancesEntity.note.coalesce("").as("note"),
+                expenseAdvancesEntity.createdAt.as("createdAt"),
+                expenseAdvancesEntity.updatedAt.as("updatedAt")
         );
     }
     @Override
     public List<ExpensesAdvancesDto> getAll(int page) {
         BooleanBuilder builder = new BooleanBuilder()
-                .and(expenseAdvances.deleted.eq(false));
+                .and(expenseAdvancesEntity.deleted.eq(false));
 
         long offset = (long) (page - 1) * Pagination.TEN.getSize();
-        return query.from(expenseAdvances)
+        return query.from(expenseAdvancesEntity)
                 .where(builder)
                 .select(constructorExpression())
                 .offset(offset)
@@ -52,11 +54,11 @@ public class ExpenseAdvanceRepoImpl extends BaseRepo implements ExpenseAdvancesR
     @Override
     public Optional<ExpensesAdvancesDto> getByDriverId(String id) {
         BooleanBuilder builder = new BooleanBuilder()
-                .and(expenseAdvances.deleted.eq(false))
-                .and(expenseAdvances.driverId.eq(id));
+                .and(expenseAdvancesEntity.deleted.eq(false))
+                .and(expenseAdvancesEntity.driverId.eq(id));
 
         return Optional.ofNullable(
-                query.from(expenseAdvances)
+                query.from(expenseAdvancesEntity)
                         .where(builder)
                         .select(constructorExpression())
                         .fetchOne()
@@ -64,8 +66,8 @@ public class ExpenseAdvanceRepoImpl extends BaseRepo implements ExpenseAdvancesR
     }
     BooleanBuilder initBuilder(Integer id) {
         return new BooleanBuilder()
-                .and(expenseAdvances.deleted.eq(false))
-                .and(expenseAdvances.id.eq(id));
+                .and(expenseAdvancesEntity.deleted.eq(false))
+                .and(expenseAdvancesEntity.id.eq(id));
     }
 
     @Override
@@ -73,9 +75,9 @@ public class ExpenseAdvanceRepoImpl extends BaseRepo implements ExpenseAdvancesR
     @Transactional
     public long deleted(Integer id) {
         BooleanBuilder builder = initBuilder(id);
-        return query.update(expenseAdvances)
+        return query.update(expenseAdvancesEntity)
                 .where(builder)
-                .set(expenseAdvances.deleted, true)
+                .set(expenseAdvancesEntity.deleted, true)
                 .execute();
     }
 
@@ -83,7 +85,7 @@ public class ExpenseAdvanceRepoImpl extends BaseRepo implements ExpenseAdvancesR
     public Optional<ExpensesAdvancesDto> getExpenseAdvanceById(Integer id) {
         BooleanBuilder builder = initBuilder(id);
         return Optional.ofNullable(
-                query.from(expenseAdvances)
+                query.from(expenseAdvancesEntity)
                         .where(builder)
                         .select(constructorExpression())
                         .fetchOne()
