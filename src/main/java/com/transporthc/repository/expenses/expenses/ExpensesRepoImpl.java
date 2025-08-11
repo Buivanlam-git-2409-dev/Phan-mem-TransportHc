@@ -1,91 +1,95 @@
 package com.transporthc.repository.expenses.expenses;
-import com.transporthc.dto.expenses.*;
 
-import static com.transporthc.entity.attached.QAttachedImgEntity.attachedImage;
-import static com.transporthc.entity.expenses.QExpensesEntity.expenses;
-import static com.transporthc.entity.expenses.QExpenseConfigEntity.expensesConfig;
-import static com.transporthc.entity.schedule.QScheduleEntity.schedule;
-import static com.transporthc.entity.truck.QTruckEntity.truck;
-import static com.transporthc.entity.user.QUserEntity.user;
-import static com.transporthc.entity.expenses.QExpenseAdvancesEntity.expenseAdvances;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.stereotype.Repository;
 
-import com.transporthc.enums.Pagination;
-import com.transporthc.enums.expenses.ExpensesStatusEnum;
-import com.transporthc.enums.role.UserRoleEnum;
-import com.transporthc.repository.BaseRepo;
+import static com.transporthc.entity.attached.QAttachedImgEntity.attachedImgEntity;
+import static com.transporthc.entity.expenses.QExpensesEntity.expensesEntity;
+import static com.transporthc.entity.expenses.QExpensesConfigEntity.expensesConfigEntity;
+import static com.transporthc.entity.schedule.QScheduleEntity.scheduleEntity;
+import static com.transporthc.entity.truck.QTruckEntity.truckEntity;
+import static com.transporthc.entity.user.QUserEntity.userEntity;
+
+import java.time.YearMonth;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import static com.transporthc.entity.expenses.QExpenseAdvancesEntity.expenseAdvancesEntity;
+
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
+import com.transporthc.dto.expenses.ExpensesDto;
+import com.transporthc.dto.expenses.ExpensesIncurredDto;
+import com.transporthc.dto.expenses.ExpensesReportDto;
+import com.transporthc.enums.Pagination;
+import com.transporthc.enums.expenses.ExpensesStatusEnum;
+import com.transporthc.enums.role.UserRoleEnum;
+import com.transporthc.repository.BaseRepo;
+
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.expression.spel.ast.Projection;
-import org.springframework.stereotype.Repository;
-
-import java.util.Date;
-import java.time.YearMonth;
-import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class ExpensesRepoImpl extends BaseRepo implements ExpensesRepoCustom{
     public ExpensesRepoImpl(EntityManager entityManager){
         super(entityManager);
     }
-
+    
     private ConstructorExpression<ExpensesDto> expensesProjection(){
         return Projections.constructor(ExpensesDto.class,
-        expenses.id.as("id"),
-        user.id.as("driverId"),
-        user.fullName.as("driverName"),
-        expenses.expensesConfigId.as("expensesConfigId"),
-        JPAExpressions.select(expensesConfig.type.as("expensesConfigType"))
-                        .from(expensesConfig)
-                        .where(expensesConfig.id.eq(expenses.expensesConfigId)),
-                expenses.amount.as("amount"),
-                expenses.note.coalesce("").as("note"),
+                expensesEntity.id.as("id"),
+                userEntity.id.as("driverId"),
+                userEntity.fullName.as("driverName"),
+                expensesEntity.expensesConfigIdEntity.as("expensesConfigId"),
+                JPAExpressions.select(expensesConfigEntity.type.as("expensesConfigType"))
+                        .from(expensesConfigEntity)
+                        .where(expensesConfigEntity.id.eq(expensesEntity.expensesConfigId)),
+                expensesEntity.amount.as("amount"),
+                expensesEntity.note.coalesce("").as("note"),
                 JPAExpressions.select(
-                                Expressions.stringTemplate("GROUP_CONCAT({0})", attachedImage.imgPath).as("attachedPaths"))
-                        .from(attachedImage)
-                        .where(attachedImage.referenceId.eq(expenses.id)),
-                expenses.scheduleId.as("scheduleId"),
-                expenses.status.as("status"),
-                expenses.createdAt.as("createdAt"),
-                expenses.updatedAt.as("updatedAt")
+                                Expressions.stringTemplate("GROUP_CONCAT({0})", attachedImgEntity.imgPath).as("attachedPaths"))
+                        .from(attachedImgEntity)
+                        .where(attachedImgEntity.referenceId.eq(expensesEntity.id)),
+                expensesEntity.scheduleId.as("scheduleId"),
+                expensesEntity.status.as("status"),
+                expensesEntity.createdAt.as("createdAt"),
+                expensesEntity.updatedAt.as("updatedAt")
         );
     }
-    BooleanBuilder initGetAllBuilder(String configId,String truckLicense, Date fromDate,Date toDate){
-        BooleanBuilder builder = new BooleanBuilder().and(expenses.deleted.eq(false));
+    BooleanBuilder initGetAllBuilder(String configId, String truckLicense, Date fromDate, Date toDate) {
+        BooleanBuilder builder = new BooleanBuilder().and(expensesEntity.deleted.eq(false));
         if (configId != null) {
-            builder.and(expenses.expensesConfigId.eq(configId));
+            builder.and(expensesEntity.expensesConfigId.eq(configId));
         }
         if (truckLicense != null && !truckLicense.isBlank()) {
-            builder.and(schedule.truckLicense.eq(truckLicense));
+            builder.and(scheduleEntity.truckLicense.eq(truckLicense));
         }
         if (fromDate != null && toDate != null) {
-            builder.and(expenses.createdAt.between(fromDate, toDate));
+            builder.and(expensesEntity.createdAt.between(fromDate, toDate));
         } else if (fromDate != null) {
-            builder.and(expenses.createdAt.goe(fromDate));
+            builder.and(expensesEntity.createdAt.goe(fromDate));
         } else if (toDate != null) {
-            builder.and(expenses.createdAt.loe(toDate));
+            builder.and(expensesEntity.createdAt.loe(toDate));
         }
         return builder;
     }
     BooleanBuilder initGetOneBuilder(String id) {
         return new BooleanBuilder()
-                .and(expenses.deleted.eq(false))
-                .and(expenses.id.eq(id));
+                .and(expensesEntity.deleted.eq(false))
+                .and(expensesEntity.id.eq(id));
     }
     @Override
     public List<ExpensesDto> getAll(int page, String expensesConfigId, String truckLicense, Date fromDate, Date toDate) {
         BooleanBuilder builder = initGetAllBuilder(expensesConfigId, truckLicense, fromDate, toDate);
         long offset = (long) (page - 1) * Pagination.TEN.getSize();
-        return query.from(expenses)
-                .innerJoin(schedule).on(expenses.scheduleId.eq(schedule.id))
-                .innerJoin(truck).on(schedule.truckLicense.eq(truck.licensePlate))
-                .innerJoin(user).on(truck.driverId.eq(user.id))
+        return query.from(expensesEntity)
+                .innerJoin(scheduleEntity).on(expensesEntity.scheduleId.eq(scheduleEntity.id))
+                .innerJoin(truckEntity).on(scheduleEntity.truckLicense.eq(truckEntity.licensePlate))
+                .innerJoin(userEntity).on(truckEntity.driverId.eq(userEntity.id))
                 .where(builder)
                 .select(expensesProjection())
                 .offset(offset)
@@ -93,53 +97,40 @@ public class ExpensesRepoImpl extends BaseRepo implements ExpensesRepoCustom{
                 .fetch();
     }
     @Override
-    public List<ExpensesDto> getAll(String expensesConfigId, String truckLicense, Date fromDate, Date toDate) {
-        BooleanBuilder builder = initGetAllBuilder(expensesConfigId, truckLicense, fromDate, toDate);
-        return query.from(expenses)
-                .innerJoin(schedule).on(expenses.scheduleId.eq(schedule.id))
-                .innerJoin(truck).on(schedule.truckLicense.eq(truck.licensePlate))
-                .innerJoin(user).on(truck.driverId.eq(user.id))
-                .where(builder)
-                .select(expensesProjection())
-                .fetch();
-    }
-
-    @Override
     public List<ExpensesIncurredDto> getExpenseIncurredByDriverID(String driverId, Date fromDate, Date toDate) {
         BooleanBuilder builder = new BooleanBuilder()
-                .and(expenses.deleted.eq(false));
+                .and(expensesEntity.deleted.eq(false));
 
         if (driverId != null && !driverId.isBlank()) {
-            builder.and(truck.driverId.eq(driverId));
+            builder.and(truckEntity.driverId.eq(driverId));
         }
         if (fromDate != null && toDate != null) {
-            builder.and(expenses.createdAt.between(fromDate, toDate));
+            builder.and(expensesEntity.createdAt.between(fromDate, toDate));
         }
 
         ConstructorExpression<ExpensesIncurredDto> expensesIncurredExpression = Projections.constructor(
-                ExpensesIncurredDTO.class,
-                expenses.expensesConfigId.as("expensesConfigId"),
-                expensesConfig.type.as("type"),
-                expenses.amount.sum().as("amount")
+                ExpensesIncurredDto.class,
+                expensesEntity.expensesConfigId.as("expensesConfigId"),
+                expensesConfigEntity.type.as("type"),
+                expensesEntity.amount.sum().as("amount")
         );
-        return query.from(expenses)
-                .innerJoin(expensesConfig).on(expenses.expensesConfigId.eq(expensesConfig.id))
-                .innerJoin(schedule).on(expenses.scheduleId.eq(schedule.id))
-                .innerJoin(truck).on(schedule.truckLicense.eq(truck.licensePlate))
+        return query.from(expensesEntity)
+                .innerJoin(expensesConfigEntity).on(expensesEntity.expensesConfigId.eq(expensesConfigEntity.id))
+                .innerJoin(scheduleEntity).on(expensesEntity.scheduleId.eq(scheduleEntity.id))
+                .innerJoin(truckEntity).on(scheduleEntity.truckLicense.eq(truckEntity.licensePlate))
                 .where(builder)
                 .select(expensesIncurredExpression)
-                .groupBy(expenses.expensesConfigId, expensesConfig.type)
+                .groupBy(expensesEntity.expensesConfigId, expensesConfigEntity.type)
                 .fetch();
     }
-
     @Override
     public Optional<ExpensesDto> getByID(String id) {
         BooleanBuilder builder = initGetOneBuilder(id);
         return Optional.ofNullable(
-                query.from(expenses)
-                        .innerJoin(schedule).on(expenses.scheduleId.eq(schedule.id))
-                        .innerJoin(truck).on(schedule.truckLicense.eq(truck.licensePlate))
-                        .innerJoin(user).on(truck.driverId.eq(user.id))
+                query.from(expensesEntity)
+                        .innerJoin(scheduleEntity).on(expensesEntity.scheduleId.eq(scheduleEntity.id))
+                        .innerJoin(truckEntity).on(scheduleEntity.truckLicense.eq(truckEntity.licensePlate))
+                        .innerJoin(userEntity).on(truckEntity.driverId.eq(userEntity.id))
                         .where(builder)
                         .select(expensesProjection())
                         .fetchOne()
@@ -148,21 +139,36 @@ public class ExpensesRepoImpl extends BaseRepo implements ExpensesRepoCustom{
     @Override
     @Modifying
     @Transactional
-    public long delete(String id){
-        BooleanBuilder builder = initGetOneBuilder(id)
-        .and(expenses.status.eq(ExpensesStatusEnum.PENDING.getValue()));
-
-        return query.update(expenses).where(builder)
-        .set(expenses.status,ExpensesStatusEnum.APPROVE.getValue())
-        .execute();
+    public long delete(String id) {
+        BooleanBuilder builder = initGetOneBuilder(id);
+        return query.update(expensesEntity)
+                .where(builder)
+                .set(expensesEntity.deleted, true)
+                .execute();
     }
+
     @Override
-    public List<ExpensesReportDto> reportAll(String period){
-        ConstructorExpression<ExpensesIncurredDto> expensesIncurredExpression = Projections.constructor(ExpensesIncurredDto.class,
-            expensesConfig.id.as("expensesConfigId"),
-            expensesConfig.type.as("type"),
-            expenses.amount.sum().as("amount")
+    @Modifying
+    @Transactional
+    public long approve(String id) {
+        BooleanBuilder builder = initGetOneBuilder(id)
+                .and(expensesEntity.status.eq(ExpensesStatusEnum.PENDING.getValue()));
+        return query.update(expensesEntity)
+                .where(builder)
+                .set(expensesEntity.status, ExpensesStatusEnum.APPROVED.getValue())
+                .execute();
+    }
+
+    //
+     @Override
+    public List<ExpensesReportDto> reportAll(String period) {
+        ConstructorExpression<ExpensesIncurredDto> expensesIncurredExpression = Projections.constructor(
+                ExpensesIncurredDto.class,
+                expensesConfigEntity.id.as("expensesConfigId"),
+                expensesConfigEntity.type.as("type"),
+                expensesEntity.amount.sum().as("amount")
         );
+
         List<ExpensesReportDto> reports = reportsQuery(period);
 
         for (ExpensesReportDto report : reports) {
@@ -173,66 +179,71 @@ public class ExpensesRepoImpl extends BaseRepo implements ExpensesRepoCustom{
 
         return reports;
     }
+
     @Override
     public long countByID(String id) {
         BooleanBuilder builder = initGetOneBuilder(id);
-        Long res = query.from(expenses)
+        Long res = query.from(expensesEntity)
                 .where(builder)
-                .select(expenses.id.count().coalesce(0L))
+                .select(expensesEntity.id.count().coalesce(0L))
                 .fetchOne();
         return res != null ? res : 0;
     }
+
     @Override
     public ExpensesStatusEnum getStatusByID(String id) {
         BooleanBuilder builder = initGetOneBuilder(id);
-        Integer statusNumber = query.from(expenses)
+        Integer statusNumber = query.from(expensesEntity)
                 .where(builder)
-                .select(expenses.status)
+                .select(expensesEntity.status)
                 .fetchOne();
         return statusNumber != null ? ExpensesStatusEnum.valueOf(statusNumber) : null;
     }
+
     private String prevPeriod(String period) {
         YearMonth yearMonth = YearMonth.parse(period);
         YearMonth prevMonth = yearMonth.minusMonths(1);
         return prevMonth.toString();
     }
+
     private List<ExpensesReportDto> reportsQuery(String period) {
         String prevPeriod = prevPeriod(period);
 
         ConstructorExpression<ExpensesReportDto> expression = Projections.constructor(
                 ExpensesReportDto.class,
-                user.id.as("driverId"),
-                user.fullName.as("driverName"),
-                Expressions.stringTemplate("GROUP_CONCAT(DISTINCT {0})", schedule.truckLicense).as("truckLicense"),
-                Expressions.stringTemplate("GROUP_CONCAT(DISTINCT {0})", schedule.moocLicense).as("moocLicense"),
-                JPAExpressions.select(expenseAdvances.remainingBalance.coalesce(0f).as("prevRemainingBalance"))
-                        .from(expenseAdvances)
-                        .where(expenseAdvances.driverId.eq(user.id).and(expenseAdvances.period.eq(prevPeriod))),
-                expenseAdvances.advance.sum().coalesce(0f).as("advance"),
-                expenseAdvances.remainingBalance.sum().coalesce(0f).as("remainingBalance")
+                userEntity.id.as("driverId"),
+                userEntity.fullName.as("driverName"),
+                Expressions.stringTemplate("GROUP_CONCAT(DISTINCT {0})", scheduleEntity.truckLicense).as("truckLicense"),
+                Expressions.stringTemplate("GROUP_CONCAT(DISTINCT {0})", scheduleEntity.moocLicense).as("moocLicense"),
+                JPAExpressions.select(expenseAdvancesEntity.remainingBalance.coalesce(0f).as("prevRemainingBalance"))
+                        .from(expenseAdvancesEntity)
+                        .where(expenseAdvancesEntity.driverId.eq(userEntity.id).and(expenseAdvancesEntity.period.eq(prevPeriod))),
+                expenseAdvancesEntity.advance.sum().coalesce(0f).as("advance"),
+                expenseAdvancesEntity.remainingBalance.sum().coalesce(0f).as("remainingBalance")
         );
 
         BooleanBuilder builder = new BooleanBuilder()
-                .and(user.roleId.eq(UserRole.DRIVER.getId()))
-                .and(expenseAdvances.period.eq(period));
+                .and(userEntity.roleId.eq(UserRoleEnum.DRIVER.getId()))
+                .and(expenseAdvancesEntity.period.eq(period));
 
-        return query.from(user)
-                .leftJoin(truck).on(truck.driverId.eq(user.id))
-                .leftJoin(schedule).on(truck.licensePlate.eq(schedule.truckLicense))
-                .leftJoin(expenseAdvances).on(expenseAdvances.driverId.eq(user.id))
+        return query.from(userEntity)
+                .leftJoin(truckEntity).on(truckEntity.driverId.eq(user.id))
+                .leftJoin(scheduleEntity).on(truckEntity.licensePlate.eq(scheduleEntity.truckLicense))
+                .leftJoin(expenseAdvancesEntity).on(expenseAdvancesEntity.driverId.eq(userEntity.id))
                 .where(builder)
                 .select(expression)
-                .groupBy(user.id, user.fullName)
+                .groupBy(userEntity.id, userEntity.fullName)
                 .fetch();
     }
+
     private List<ExpensesIncurredDto> expensesIncurredEachDriverQuery(String driverId, ConstructorExpression<ExpensesIncurredDto> expression) {
-        return query.from(expenses)
-                .innerJoin(expensesConfig).on(expenses.expensesConfigId.eq(expensesConfig.id))
-                .innerJoin(schedule).on(expenses.scheduleId.eq(schedule.id))
-                .innerJoin(truck).on(schedule.truckLicense.eq(truck.licensePlate))
+        return query.from(expensesEntity)
+                .innerJoin(expensesConfigEntity).on(expensesEntity.expensesConfigIdEntity.eq(expensesConfigEntity.id))
+                .innerJoin(scheduleEntity).on(expensesEntity.scheduleId.eq(scheduleEntity.id))
+                .innerJoin(truckEntity).on(scheduleEntity.truckLicense.eq(truckEntity.licensePlate))
                 .select(expression)
-                .where(truck.driverId.eq(driverId))
-                .groupBy(expensesConfig.id, expensesConfig.type)
+                .where(truckEntity.driverId.eq(driverId))
+                .groupBy(expensesConfigEntity.id, expensesConfigEntity.type)
                 .fetch();
     }
 }

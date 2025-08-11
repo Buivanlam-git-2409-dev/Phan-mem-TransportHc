@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static com.transporthc.entity.expenses.QExpensesConfig.expensesConfig;
+import static com.transporthc.entity.expenses.QExpensesConfigEntity.expensesConfigEntity;
 
 @Repository
 public class ExpensesConfigRepoImpl extends BaseRepo implements ExpensesConfigRepoCustom {
@@ -25,32 +25,32 @@ public class ExpensesConfigRepoImpl extends BaseRepo implements ExpensesConfigRe
 
     Expression<ExpensesConfigDto> expression = Projections.fields(
             ExpensesConfigDto.class,
-            expensesConfig.id.as("id"),
-            expensesConfig.type.as("type"),
-            expensesConfig.note.as("note"),
-            expensesConfig.createdAt.as("createdAt"),
-            expensesConfig.updatedAt.as("updatedAt")
+            expensesConfigEntity.id.as("id"),
+            expensesConfigEntity.type.as("type"),
+            expensesConfigEntity.note.as("note"),
+            expensesConfigEntity.createdAt.as("createdAt"),
+            expensesConfigEntity.updatedAt.as("updatedAt")
     );
 
     @Override
     public List<ExpensesConfigDto> getAll() {
-        return query.from(expensesConfig)
-                .where(expensesConfig.deleted.eq(false))
+        return query.from(expensesConfigEntity)
+                .where(expensesConfigEntity.deleted.eq(false))
                 .select(expression)
                 .fetch();
     }
 
     BooleanBuilder initBuilder(String id) {
         return new BooleanBuilder()
-                .and(expensesConfig.id.eq(id))
-                .and(expensesConfig.deleted.eq(false));
+                .and(expensesConfigEntity.id.eq(id))
+                .and(expensesConfigEntity.deleted.eq(false));
     }
 
     @Override
     public Optional<ExpensesConfigDto> getByID(String id) {
         BooleanBuilder builder = initBuilder(id);
         return Optional.ofNullable(
-                query.from(expensesConfig)
+                query.from(expensesConfigEntity)
                         .where(builder)
                         .select(expression)
                         .fetchOne()
@@ -62,9 +62,9 @@ public class ExpensesConfigRepoImpl extends BaseRepo implements ExpensesConfigRe
     @Transactional
     public long delete(String id) {
         BooleanBuilder builder = initBuilder(id);
-        return query.update(expensesConfig)
+        return query.update(expensesConfigEntity)
                 .where(builder)
-                .set(expensesConfig.deleted, true)
+                .set(expensesConfigEntity.deleted, true)
                 .execute();
     }
 }

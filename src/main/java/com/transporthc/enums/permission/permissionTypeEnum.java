@@ -3,7 +3,7 @@ package com.transporthc.enums.permission;
 import lombok.Getter;
 
 @Getter
-public enum permissionTypeEnum {
+public enum PermissionTypeEnum {
     USERS("Quản lý người dùng", "USERS"),
     PERMISSIONS("Phân quyền", "PERMISSIONS"),
     CONFIGS("Quản lý cấu hình", "CONFIGS"),
@@ -20,7 +20,7 @@ public enum permissionTypeEnum {
     private final String title;
     private final String name;
 
-    permissionTypeEnum(String title, String name){
+    PermissionTypeEnum(String title, String name){
         this.title = title;
         this.name = name;
     }

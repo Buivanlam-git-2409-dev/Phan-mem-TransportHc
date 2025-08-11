@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class truckDto {
+public class TruckDto {
     @ExportColumn(name = "Mã")
     private Integer id;
 
@@ -47,7 +47,7 @@ public class truckDto {
     @ExportColumn(name = "Ngày tạo")
     private Date createAt;
     private Date updateAt;
-    public truckDto(Integer id, @Size(min = 8, message = "Biển số xe tối thiểu 8 ký tự") String licensePlate,
+    public TruckDto(Integer id, @Size(min = 8, message = "Biển số xe tối thiểu 8 ký tự") String licensePlate,
             @NotNull(message = "Dung tích xe không được để trống") Float capacity,
             @NotNull(message = "ID tài xế không được để trống") String driverId, String driverName, int type,
             String typeDescription, int status, String statusDescription, String note, Date createAt,
