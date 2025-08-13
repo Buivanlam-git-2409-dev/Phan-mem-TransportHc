@@ -45,8 +45,8 @@ public class TruckDto {
     private String note;
 
     @ExportColumn(name = "Ngày tạo")
-    private Date createAt;
-    private Date updateAt;
+    private Date createdAt;
+    private Date updatedAt;
     public TruckDto(Integer id, @Size(min = 8, message = "Biển số xe tối thiểu 8 ký tự") String licensePlate,
             @NotNull(message = "Dung tích xe không được để trống") Float capacity,
             @NotNull(message = "ID tài xế không được để trống") String driverId, String driverName, int type,
@@ -62,9 +62,7 @@ public class TruckDto {
         this.status = TruckStatusEnum.valueOf(status);
         this.statusDescription = statusDescription;
         this.note = note;
-        this.createAt = createAt;
-        this.updateAt = updateAt;
+        this.createdAt = createAt;
+        this.updatedAt = updateAt;
     }
-
-    
 }

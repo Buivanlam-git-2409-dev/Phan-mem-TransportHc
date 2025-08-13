@@ -24,7 +24,7 @@ public class UserEntity {
     private String id;
 
     @Column(name = "full_name")
-    private String nullName;
+    private String fullName;
 
     @Column(name = "phone")
     private String phone;

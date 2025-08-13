@@ -21,7 +21,7 @@ public class ScheduleConfigDto {
 
     @NotBlank(message = "Thông tin địa chỉ điểm đi không được để trống!")
     @ExportColumn(name = "Điểm đi")
-    private String palceA;
+    private String placeA;
     @NotBlank(message = "Thông tin địa chỉ điểm đến không được để trống!")
     @ExportColumn(name = "Điểm đến")
     private String placeB;
