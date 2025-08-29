@@ -14,7 +14,7 @@ import java.rmi.ServerException;
 
 
 @RestController
-@RequestMapping("/attached_images")
+@RequestMapping("/attached-images")
 @RequiredArgsConstructor
 public class AttachedImgController {
     private final AttachedImgService attachedImgService;

@@ -4,8 +4,8 @@ import com.transporthc.dto.attached.AttachedImgPathDto;
 import com.transporthc.dto.ExportExcelResponse;
 import com.transporthc.dto.schedule.ScheduleDto;
 import com.transporthc.dto.schedule.ScheduleSalaryDto;
-import com.transporthc.entity.schedule.ScheduleEntity;
-import com.transporthc.entity.truck.TruckEntity;
+import com.transporthc.entity.schedule.Schedule;
+import com.transporthc.entity.truck.Truck;
 import com.transporthc.enums.attached.AttachedTypeEnum;
 import com.transporthc.enums.permission.PermissionKeyEnum;
 import com.transporthc.enums.permission.PermissionTypeEnum;
@@ -72,7 +72,7 @@ public class ScheduleServiceImpl extends BaseService implements ScheduleService 
 
     private void validateTruck(String license, TruckTypeEnum type) {
         String message = null;
-        TruckEntity truck = truckRepo.findByLicensePlate(license)
+        Truck truck = truckRepo.findByLicensePlate(license)
                 .orElseThrow(() -> new NotFoundException("Xe có biển số " + license + " không tồn tại!"));
         if (!truck.getType().equals(type.getValue())) {
             message = String.format("Loại xe đang chọn không hợp lệ. Vui lòng chọn %s!", type.getDescription());
@@ -111,7 +111,7 @@ public class ScheduleServiceImpl extends BaseService implements ScheduleService 
     public ScheduleDto create(ScheduleDto dto) throws ServerException {
         checkPermission(type, PermissionKeyEnum.WRITE);
         validate(dto);
-        ScheduleEntity schedule = createScheduleFromDto(dto);
+        Schedule schedule = createScheduleFromDto(dto);
 
         // Gửi notification qua WebSocket
         String notifyMsg = "Lịch trình mới được khởi tạo cần được phê duyệt lúc " + new java.util.Date();
@@ -124,8 +124,8 @@ public class ScheduleServiceImpl extends BaseService implements ScheduleService 
         return result.get();
     }
 
-    private ScheduleEntity createScheduleFromDto(ScheduleDto dto) {
-        ScheduleEntity schedule = scheduleMapper.toSchedule(dto);
+    private Schedule createScheduleFromDto(ScheduleDto dto) {
+        Schedule schedule = scheduleMapper.toSchedule(dto);
         scheduleRepo.save(schedule);
         return schedule;
     }
@@ -134,7 +134,7 @@ public class ScheduleServiceImpl extends BaseService implements ScheduleService 
     public ScheduleDto update(String id, ScheduleDto dto) {
         checkPermission(type, PermissionKeyEnum.WRITE);
 
-        ScheduleEntity schedule = scheduleRepo.findById(id)
+        Schedule schedule = scheduleRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Lịch trình cần cập nhật không tồn tại!"));
         checkUpdateConditions(schedule);
 
@@ -144,7 +144,7 @@ public class ScheduleServiceImpl extends BaseService implements ScheduleService 
         return result.orElse(null);
     }
 
-    private void updateScheduleFromDto(ScheduleEntity schedule, ScheduleDto dto) {
+    private void updateScheduleFromDto(Schedule schedule, ScheduleDto dto) {
         scheduleMapper.updateSchedule(schedule, dto);
         if (dto.getTruckLicense() != null) {
             validateTruck(dto.getTruckLicense(), TruckTypeEnum.TRUCK_HEAD);
@@ -155,7 +155,7 @@ public class ScheduleServiceImpl extends BaseService implements ScheduleService 
         scheduleRepo.save(schedule);
     }
 
-    private void checkUpdateConditions(ScheduleEntity schedule) {
+    private void checkUpdateConditions(Schedule schedule) {
         //Chỉ sửa được trước ngày bắt đầu (departure time) hoặc chưa duyệt
         Date currentTime = new Date();
         if (
@@ -246,13 +246,13 @@ public class ScheduleServiceImpl extends BaseService implements ScheduleService 
     }
 
     @Override
-    public List<ScheduleEntity> importScheduleData(MultipartFile importFile) {
+    public List<Schedule> importScheduleData(MultipartFile importFile) {
         checkPermission(type, PermissionKeyEnum.WRITE);
 
         Workbook workbook = FileFactory.getWorkbookStream(importFile);
         List<ScheduleDto> scheduleDtoList = ExcelUtils.getImportData(workbook, ImportConfig.scheduleImport);
 
-        List<ScheduleEntity> schedule = scheduleMapper.toScheduleList(scheduleDtoList);
+        List<Schedule> schedule = scheduleMapper.toScheduleList(scheduleDtoList);
         return scheduleRepo.saveAll(schedule);
     }
 

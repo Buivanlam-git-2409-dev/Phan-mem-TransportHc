@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import com.transporthc.entity.user.UserEntity;
+import com.transporthc.entity.user.User;
 import com.transporthc.enums.permission.PermissionKeyEnum;
 import com.transporthc.enums.permission.PermissionTypeEnum;
 import com.transporthc.exception.define.ForbiddenException;
@@ -20,7 +20,7 @@ public class BaseService {
     @Autowired
     RolePermissionRepo rolePermissionRepo;
 
-    protected UserEntity getCurrentUserEntity(){
+    protected User getCurrentUserEntity(){
         Authentication authen = SecurityContextHolder.getContext().getAuthentication();
         if(authen==null || !authen.isAuthenticated() || authen.getPrincipal().equals("anonymousUser")){
             throw new ForbiddenException("Bạn chưa đăng nhập. Thử lại!");
@@ -29,7 +29,7 @@ public class BaseService {
         return userRepository.findByUsername(username);
     }
     protected boolean checkPermission(PermissionTypeEnum type, PermissionKeyEnum key){
-        UserEntity user = getCurrentUserEntity();
+        User user = getCurrentUserEntity();
         if(!rolePermissionRepo.hasPermission(user.getRoleId(), type, key)){
             throw new ForbiddenException("Huh, quyền truy cập của bạn không được phép!");
         }

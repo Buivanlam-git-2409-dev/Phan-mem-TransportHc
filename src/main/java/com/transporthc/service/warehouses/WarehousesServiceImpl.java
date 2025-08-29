@@ -2,7 +2,7 @@ package com.transporthc.service.warehouses;
 
 import com.transporthc.dto.warehouse.WarehousesDto;
 import com.transporthc.dto.ExportExcelResponse;
-import com.transporthc.entity.warehouse.WarehousesEntity;
+import com.transporthc.entity.warehouse.Warehouses;
 import com.transporthc.enums.permission.PermissionKeyEnum;
 import com.transporthc.enums.permission.PermissionTypeEnum;
 import com.transporthc.exception.define.NotFoundException;
@@ -37,7 +37,7 @@ public class WarehousesServiceImpl extends BaseService implements WarehousesServ
 
     @Override
     public ExportExcelResponse exportWarehouses() throws Exception {
-        List<WarehousesEntity> warehousesList = repository.findAll();
+        List<Warehouses> warehousesList = repository.findAll();
         List<WarehousesDto> warehouses = mapper.toWarehouseDTOList(warehousesList);
 
         if (CollectionUtils.isEmpty(warehouses)) {

@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.transporthc.dto.attached.AttachedImgPathDto;
-import com.transporthc.entity.attached.AttachedImgEntity;
+import com.transporthc.entity.attached.AttachedImg;
 import com.transporthc.enums.attached.AttachedTypeEnum;
 import com.transporthc.exception.define.NotFoundException;
 import com.transporthc.mapper.attached.AttachedImgMapper;
@@ -24,13 +24,13 @@ public class AttachedImgServiceImpl implements AttachedImgService {
     private final FileStorageServiceImpl fileStorageService;
 
     @Override
-    public List<AttachedImgEntity> addAttachedImages(String referenceId, AttachedTypeEnum type, AttachedImgPathDto attachedImagePathsDTO) {
+    public List<AttachedImg> addAttachedImages(String referenceId, AttachedTypeEnum type, AttachedImgPathDto attachedImagePathsDTO) {
         String[] attachedImagePaths = attachedImagePathsDTO.getAttachedImgPaths();
         return addAttachedImages(referenceId, type, attachedImagePaths);
     }
 
-    public List<AttachedImgEntity> addAttachedImages(String referenceId, AttachedTypeEnum type, String[] attachedImagePaths) {
-        List<AttachedImgEntity> attachedImages = attachedImgMapper.toAttchedImgs(referenceId, type, attachedImagePaths);
+    public List<AttachedImg> addAttachedImages(String referenceId, AttachedTypeEnum type, String[] attachedImagePaths) {
+        List<AttachedImg> attachedImages = attachedImgMapper.toAttchedImgs(referenceId, type, attachedImagePaths);
         return attachedImgRepo.saveAll(attachedImages);
     }
 

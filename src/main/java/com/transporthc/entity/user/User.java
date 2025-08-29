@@ -19,7 +19,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
-public class UserEntity {
+public class User {
     @Id
     private String id;
 

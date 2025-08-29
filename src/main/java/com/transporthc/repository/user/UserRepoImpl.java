@@ -13,7 +13,7 @@ import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 import com.transporthc.dto.user.UserDto;
-import com.transporthc.entity.user.UserEntity;
+import com.transporthc.entity.user.User;
 import com.transporthc.enums.Pagination;
 import com.transporthc.enums.role.UserRoleEnum;
 import com.transporthc.repository.BaseRepo;
@@ -57,7 +57,7 @@ public class UserRepoImpl extends BaseRepo implements UserRepoCustom {
     }
 
     @Override
-    public UserEntity getUserById(String id){
+    public User getUserById(String id){
         QUserEnity qUser = QUserEntity.userEntity;
         BooleanBuilder builder = new BooleanBuilder()
                 .and(qUser.id.eq(id));
@@ -68,7 +68,7 @@ public class UserRepoImpl extends BaseRepo implements UserRepoCustom {
 
     @Override
     @Transactional
-    public Boolean updateUser(UserEntity exitingUser,String id, UserDto updateUserDTO) {
+    public Boolean updateUser(User exitingUser,String id, UserDto updateUserDTO) {
         QUserEntity qUser = QUserEntity.userEntity;
 
         BooleanBuilder whereClause = new BooleanBuilder();
@@ -167,7 +167,7 @@ public class UserRepoImpl extends BaseRepo implements UserRepoCustom {
     }
 
     @Override
-    public UserEntity  findByUsername(String username) {
+    public User  findByUsername(String username) {
         QUserEntity qUser = QUserEntity.user;
 
         return query.selectFrom(qUser)

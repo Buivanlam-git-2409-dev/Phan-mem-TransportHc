@@ -1,7 +1,7 @@
 package com.transporthc.service.rolepermission;
 
 import com.transporthc.dto.rolepermission.UpdateRolePermissionRequest;
-import com.transporthc.entity.rolepermission.QRolePermissionEntity;
+import com.transporthc.entity.rolepermission.QRolePermission;
 import com.transporthc.enums.permission.PermissionKeyEnum;
 import com.transporthc.enums.permission.PermissionTypeEnum;
 import com.transporthc.repository.rolepermission.RolePermissionRepo;
@@ -36,7 +36,7 @@ public class RolePermissionServiceImpl extends BaseService implements RolePermis
 
         List<Path<?>> paths = new ArrayList<>();
         List<Object> values = new ArrayList<>();
-        QRolePermissionEntity qRolePermission = QRolePermissionEntity.rolePermission;
+        QRolePermission qRolePermission = QRolePermission.rolePermission;
 
         for (Field field : dto.getClass().getDeclaredFields()) {
             field.setAccessible(true);

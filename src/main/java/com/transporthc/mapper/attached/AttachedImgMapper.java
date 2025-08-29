@@ -6,15 +6,15 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.transporthc.entity.attached.AttachedImgEntity;
+import com.transporthc.entity.attached.AttachedImg;
 import com.transporthc.enums.attached.AttachedTypeEnum;
 
 @Component
 public class AttachedImgMapper {
-    public List<AttachedImgEntity> toAttchedImgs(String referenceId,AttachedTypeEnum type,String[] attachedImgPaths){
-        List<AttachedImgEntity> imgs = new ArrayList<>();
+    public List<AttachedImg> toAttchedImgs(String referenceId,AttachedTypeEnum type,String[] attachedImgPaths){
+        List<AttachedImg> imgs = new ArrayList<>();
         for(String path: attachedImgPaths){
-            AttachedImgEntity img = AttachedImgEntity.builder()
+            AttachedImg img = AttachedImg.builder()
             .referenceId(referenceId)
             .type(type.getValue())
             .imgPath(path.trim())

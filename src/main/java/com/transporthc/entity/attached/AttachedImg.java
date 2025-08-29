@@ -25,7 +25,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "attached_imgs")
-public class AttachedImgEntity extends BaseEntity{
+public class AttachedImg extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

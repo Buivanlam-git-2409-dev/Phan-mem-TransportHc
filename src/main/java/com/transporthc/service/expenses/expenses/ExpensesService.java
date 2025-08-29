@@ -9,7 +9,7 @@ import com.transporthc.dto.ExportExcelResponse;
 import com.transporthc.dto.expenses.ExpensesDto;
 import com.transporthc.dto.expenses.ExpensesIncurredDto;
 import com.transporthc.dto.expenses.ExpensesReportDto;
-import com.transporthc.entity.expenses.ExpensesEntity;
+import com.transporthc.entity.expenses.Expenses;
 
 public interface ExpensesService {
     List<ExpensesDto> getAll(Integer page, String expensesConfigId, String truckLicense, String fromDateStr, String toDateStr);
@@ -20,7 +20,7 @@ public interface ExpensesService {
     long approveByID(String id) throws ServerException;
     List<ExpensesIncurredDto> report(String driverId, String period);
     List<ExpensesReportDto> reportAll(String period);
-    List<ExpensesEntity> importExpensesData(MultipartFile importFile);
+    List<Expenses> importExpensesData(MultipartFile importFile);
     ExportExcelResponse exportExpenses(String expensesConfigId, String truckLicense, String fromDate, String toDate) throws Exception;
     ExportExcelResponse exportReportExpenses(String driverId, String period) throws Exception;
 }

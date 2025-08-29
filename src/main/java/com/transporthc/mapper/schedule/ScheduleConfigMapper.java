@@ -8,15 +8,15 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import com.transporthc.dto.schedule.ScheduleConfigDto;
-import com.transporthc.entity.schedule.ScheduleConfigEntity;
+import com.transporthc.entity.schedule.ScheduleConfig;
 import com.transporthc.enums.IDKey;
 import com.transporthc.utils.utils;
 
 @Component
 public class ScheduleConfigMapper {
-    public ScheduleConfigEntity toScheduleConfig(ScheduleConfigDto dto) {
+    public ScheduleConfig toScheduleConfig(ScheduleConfigDto dto) {
         if (dto == null) return null;
-        return ScheduleConfigEntity.builder()
+        return ScheduleConfig.builder()
                 .id(utils.genID(IDKey.SCHEDULE_CONFIG))
                 .placeA(dto.getPlaceA())
                 .placeB(dto.getPlaceB())
@@ -25,14 +25,14 @@ public class ScheduleConfigMapper {
                 .build();
     }
 
-    public List<ScheduleConfigEntity> toScheduleConfigList(List<ScheduleConfigDto> dtos) {
+    public List<ScheduleConfig> toScheduleConfigList(List<ScheduleConfigDto> dtos) {
         if(dtos == null || dtos.isEmpty()) {
             return Collections.emptyList();
         }
         return dtos.stream().map(this::toScheduleConfig).collect(Collectors.toList());
     }
 
-    public void updateScheduleConfig(ScheduleConfigEntity config, ScheduleConfigDto dto) {
+    public void updateScheduleConfig(ScheduleConfig config, ScheduleConfigDto dto) {
         if (dto == null) return;
 
         Field[] fields = dto.getClass().getDeclaredFields();

@@ -21,17 +21,17 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "trucks")
-public class TruckEntity extends BaseEntity{
+public class Truck extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
+    // id tài xế
     @Column(name = "driver_id",nullable = false)
     private String driverId;
-
+    // biển số xe
     @Column(name = "license_plate",nullable = false)
     private String licensePlate;
-
+    // dung tich xe
     @Column(name = "capacity",nullable = false)
     private Float capacity;
 
@@ -40,7 +40,7 @@ public class TruckEntity extends BaseEntity{
 
     @Column(name = "status",nullable = false)
     private Integer status;
-
+    // loại xe
     @Column(name = "type",nullable = false)
     private Integer type;
 }

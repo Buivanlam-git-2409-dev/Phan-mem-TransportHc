@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.transporthc.entity.permission.PermissionEntity;
+import com.transporthc.entity.permission.Permission;
 import com.transporthc.entity.permission.QPermissionEntity;
 import com.transporthc.entity.rolepermission.QRolePermissionEntity;
 import com.transporthc.repository.BaseRepo;
@@ -18,7 +18,7 @@ public class PermissionRepoImpl extends BaseRepo implements PermissionRepoCustom
     }
 
     @Override
-    public List<PermissionEntity> getPermissionsByRoleId(Integer roleId) {
+    public List<Permission> getPermissionsByRoleId(Integer roleId) {
         QPermissionEntity permission = QPermissionEntity.permission;
         QRolePermissionEntity rolePermission = QRolePermissionEntity.rolePermission;
 

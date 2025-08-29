@@ -7,18 +7,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.transporthc.dto.ExportExcelResponse;
 import com.transporthc.dto.user.UserDto;
-import com.transporthc.entity.user.UserEntity;
+import com.transporthc.entity.user.User;
 
 @Service
 public interface UserService {
-    UserEntity createUser(UserDto userDto);
-    UserEntity updateUser(String id, UserDto updateUserDTO);
-    List<UserEntity> getAllUsers(int page);
-    UserEntity getUserById(String id);
+    User createUser(UserDto userDto);
+    User updateUser(String id, UserDto updateUserDTO);
+    List<User> getAllUsers(int page);
+    User getUserById(String id);
     String deleteById(String id);
     List<UserDto> getDriver(int page);
     List<UserDto> getAdmin(int page);
-    List<UserEntity> importUserData(MultipartFile importFile);
+    List<User> importUserData(MultipartFile importFile);
     ExportExcelResponse exportDriver(int page) throws Exception;
     ExportExcelResponse exportAdmin(int page) throws Exception;
 }

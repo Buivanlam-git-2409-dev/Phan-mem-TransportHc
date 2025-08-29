@@ -3,7 +3,7 @@ package com.transporthc.service.authentication;
 import com.transporthc.dto.authentication.AuthRequest;
 import com.transporthc.dto.user.UserDto;
 import com.transporthc.dto.authentication.AuthResponse;
-import com.transporthc.entity.user.UserEntity;
+import com.transporthc.entity.user.User;
 import com.transporthc.exception.define.ConflictException;
 import com.transporthc.exception.define.NotFoundException;
 import com.transporthc.mapper.user.UserMapper;
@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     @Transactional
-    public UserEntity register(UserDto userDto) {
+    public User register(UserDto userDto) {
         // Kiểm tra xem username đã tồn tại chưa
         if (userRepo.findByUsername(userDto.getUsername()) != null) {
             throw new ConflictException("Tên đăng nhập đã tồn tại.");
@@ -54,7 +54,7 @@ public class AuthServiceImpl implements AuthService{
             throw new BadCredentialsException("Sai tên đăng nhập hoặc mật khẩu.");
         }
 
-        UserEntity user = userRepo.findByUsername(authRequest.getUsername());
+        User user = userRepo.findByUsername(authRequest.getUsername());
         if (user == null) {
             throw new NotFoundException("Không tìm thấy người dùng.");
         }

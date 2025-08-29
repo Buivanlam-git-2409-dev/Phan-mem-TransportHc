@@ -2,8 +2,8 @@ package com.transporthc.service.transaction;
 
 import com.transporthc.dto.ExportExcelResponse;
 import com.transporthc.dto.transaction.TransactionDto;
-import com.transporthc.entity.products.ProductsEntity;
-import com.transporthc.entity.transaction.TransactionEntity;
+import com.transporthc.entity.products.Products;
+import com.transporthc.entity.transaction.Transaction;
 import com.transporthc.enums.permission.PermissionKeyEnum;
 import com.transporthc.enums.permission.PermissionTypeEnum;
 import com.transporthc.exception.define.ConflictException;
@@ -43,7 +43,7 @@ public class TransactionServiceImpl extends BaseService implements TransactionSe
     public TransactionDto createTransaction(TransactionDto transactionDto) {
         checkPermission(type, PermissionKeyEnum.WRITE);
 
-        ProductsEntity products = productsRepo.findById(transactionDto.getGoodsId())
+        Products products = productsRepo.findById(transactionDto.getGoodsId())
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy hàng hóa"));
 
         if (transactionDto.getOrigin().getValue()) {
@@ -57,7 +57,7 @@ public class TransactionServiceImpl extends BaseService implements TransactionSe
             productsRepo.save(products);
         }
 
-        TransactionEntity transaction = mapper.toTransaction(transactionDto);
+        Transaction transaction = mapper.toTransaction(transactionDto);
         repository.save(transaction);
 
         return repository.getTransactionsById(transaction.getId()).get();
@@ -68,10 +68,10 @@ public class TransactionServiceImpl extends BaseService implements TransactionSe
     public Optional<TransactionDto> updateTransaction(String id, TransactionDto dto) {
         checkPermission(type, PermissionKeyEnum.WRITE);
 
-        TransactionEntity transaction = repository.findById(id)
+        Transaction transaction = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy thông tin giao dịch"));
 
-        ProductsEntity products = productsRepo.findById(transaction.getProductsId())
+        Products products = productsRepo.findById(transaction.getProductsId())
                 .orElseThrow(() -> new NotFoundException("Không tìm thấy hàng hóa"));
 
         if (dto.getOrigin() != null && !transaction.getOrigin().equals(dto.getOrigin().getValue())) {
@@ -128,17 +128,17 @@ public class TransactionServiceImpl extends BaseService implements TransactionSe
     }
 
     @Override
-    public List<TransactionEntity> importTransactionData(MultipartFile importFile) {
+    public List<Transaction> importTransactionData(MultipartFile importFile) {
 
         checkPermission(type, PermissionKeyEnum.WRITE);
 
         Workbook workbook = FileFactory.getWorkbookStream(importFile);
         List<TransactionDto> transactionDtoList = ExcelUtils.getImportData(workbook, ImportConfig.transactionImport);
 
-        List<TransactionEntity> transactions = mapper.toTransactions(transactionDtoList);
+        List<Transaction> transactions = mapper.toTransactions(transactionDtoList);
 
-        for (TransactionEntity transaction : transactions) {
-            ProductsEntity products = productsRepo.findById(transaction.getProductsId())
+        for (Transaction transaction : transactions) {
+            Products products = productsRepo.findById(transaction.getProductsId())
                     .orElseThrow(() -> new NotFoundException("Không tìm thấy hàng hóa"));
 
             if (transaction.getOrigin()) {

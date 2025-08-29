@@ -14,12 +14,12 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExpenseConfigEntity extends BaseEntity {
+public class ExpenseConfig extends BaseEntity {
     @Id
     private String id;
 
-    @Column(name = "type")
-    private String type;
+    // @Column(name = "type")
+    // private String type;
 
     @Column(name = "note")
     private String note;

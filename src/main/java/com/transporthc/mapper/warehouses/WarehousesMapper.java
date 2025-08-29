@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import com.transporthc.dto.warehouse.WarehousesDto;
-import com.transporthc.entity.warehouse.WarehousesEntity;
+import com.transporthc.entity.warehouse.Warehouses;
 
 @Component
 public class WarehousesMapper {
-    public List<WarehousesDto> toWarehouseDTOList(List<WarehousesEntity> warehousesList) {
+    public List<WarehousesDto> toWarehouseDTOList(List<Warehouses> warehousesList) {
         if(warehousesList == null || warehousesList.isEmpty()) return null;
         return warehousesList.stream().map(warehousesEntity->WarehousesDto.builder()
         .id(warehousesEntity.getId())

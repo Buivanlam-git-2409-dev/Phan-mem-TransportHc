@@ -7,15 +7,15 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import com.transporthc.dto.truck.TruckDto;
-import com.transporthc.entity.truck.TruckEntity;
+import com.transporthc.entity.truck.Truck;
 import com.transporthc.enums.truck.TruckStatusEnum;
 import com.transporthc.enums.truck.TruckTypeEnum;
 
 @Component
 public class TruckMapper {
-    public TruckEntity toTruck(TruckDto truckDTO) {
+    public Truck toTruck(TruckDto truckDTO) {
         if(truckDTO==null)  return null;
-        return TruckEntity.builder()
+        return Truck.builder()
                 .id(truckDTO.getId() != null ? truckDTO.getId() : null)
                 .driverId(truckDTO.getDriverId())
                 .licensePlate(truckDTO.getLicensePlate())
@@ -26,14 +26,14 @@ public class TruckMapper {
                 .build();
     }
 
-    public List<TruckEntity> toTruckList(List<TruckDto> dtos) {
+    public List<Truck> toTruckList(List<TruckDto> dtos) {
         if(dtos == null || dtos.isEmpty()) {
             return Collections.emptyList();
         }
         return dtos.stream().map(this::toTruck).collect(Collectors.toList());
     }
 
-    public TruckDto toTruckDTO(TruckEntity truck) {
+    public TruckDto toTruckDTO(Truck truck) {
         if (truck == null) return null;
         TruckDto truckDTO = new TruckDto();
         truckDTO.setId(truck.getId());

@@ -14,15 +14,15 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 import com.transporthc.dto.transaction.TransactionDto;
-import com.transporthc.entity.transaction.TransactionEntity;
+import com.transporthc.entity.transaction.Transaction;
 import com.transporthc.repository.BaseRepo;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
-import static com.transporthc.entity.products.QProductsEntity.productsEntity;
-import static com.transporthc.entity.transaction.QTransactionEntity.transactionEntity;
-import static com.transporthc.entity.user.QUserEntity.userEntity;
+import static com.transporthc.entity.products.QProducts.products;
+import static com.transporthc.entity.transaction.QTransaction.transaction;
+import static com.transporthc.entity.user.QUser.user;
 
 @Repository
 public class TransactionRepoImpl extends BaseRepo implements TransactionRepoCustom {
@@ -32,42 +32,42 @@ public class TransactionRepoImpl extends BaseRepo implements TransactionRepoCust
 
     private ConstructorExpression<TransactionDto> transactionProjection() {
         return Projections.constructor(TransactionDto.class,
-                transactionEntity.id.as("id"),
-                transactionEntity.refUserId.as("refUserId"),
-                JPAExpressions.select(userEntity.fullName.as("fullNameRefUser"))
-                        .from(userEntity)
-                        .where(userEntity.id.eq(transactionEntity.refUserId)),
-                transactionEntity.productsEntityId.as("productsEntityId"),
-                JPAExpressions.select(productsEntity.name.as("productsEntityName"))
-                        .from(productsEntity)
-                        .where(productsEntity.id.eq(transactionEntity.productsEntityId)),
-                transactionEntity.quantity.as("quantity"),
-                transactionEntity.destination.as("destination"),
-                transactionEntity.customerName.as("customerName"),
-                transactionEntity.transactionTime.as("transactionTime"),
-                transactionEntity.origin.as("origin"), //true f
+                transaction.id.as("id"),
+                transaction.refUserId.as("refUserId"),
+                JPAExpressions.select(user.fullName.as("fullNameRefUser"))
+                        .from(user)
+                        .where(user.id.eq(transaction.refUserId)),
+                transaction.productsId.as("productsId"),
+                JPAExpressions.select(products.name.as("productsName"))
+                        .from(products)
+                        .where(products.id.eq(transaction.productsId)),
+                transaction.quantity.as("quantity"),
+                transaction.destination.as("destination"),
+                transaction.customerName.as("customerName"),
+                transaction.transactionTime.as("transactionTime"),
+                transaction.origin.as("origin"), //true f
                 new CaseBuilder()
-                        .when(transactionEntity.origin.eq(true)).then(TransactionType.INBOUND_TRANSACTION.getTitle())
+                        .when(transaction.origin.eq(true)).then(TransactionType.INBOUND_TRANSACTION.getTitle())
                         .otherwise(TransactionType.OUTBOUND_TRANSACTION.getTitle()).as("originDescription"),
-                transactionEntity.image.as("image"),
-                transactionEntity.createdAt.as("createdAt"),
-                transactionEntity.updatedAt.as("updatedAt")
+                transaction.image.as("image"),
+                transaction.createdAt.as("createdAt"),
+                transaction.updatedAt.as("updatedAt")
         );
     }
 
     BooleanBuilder initGetOneBuilder(String id) {
         return new BooleanBuilder()
-                .and(transactionEntity.id.eq(id))
-                .and(transactionEntity.deleted.eq(false));
+                .and(transaction.id.eq(id))
+                .and(transaction.deleted.eq(false));
     }
 
     @Override
     @Modifying
     @Transactional
-    public long updateTransaction(TransactionEntity OldTransaction, String id, TransactionDto dto) {
+    public long updateTransaction(Transaction OldTransaction, String id, TransactionDto dto) {
         BooleanBuilder builder = initGetOneBuilder(id);
 
-        JPAUpdateClause updateClause = new JPAUpdateClause(entityManager, transactionEntity);
+        JPAUpdateClause updateClause = new JPAUpdateClause(entityManager, transaction);
 
         boolean isUpdated = false;
         boolean isChanged = false;
@@ -76,61 +76,61 @@ public class TransactionRepoImpl extends BaseRepo implements TransactionRepoCust
             if(!dto.getRefUserId().equals(OldTransaction.getRefUserId())){
                 isChanged = true;
             }
-            updateClause.set(transactionEntity.refUserId, dto.getRefUserId());
+            updateClause.set(transaction.refUserId, dto.getRefUserId());
             isUpdated = true;
         }
         if (dto.getCustomerName() != null) {
             if(!dto.getCustomerName().equals(OldTransaction.getCustomerName())){
                 isChanged = true;
             }
-            updateClause.set(transactionEntity.customerName, dto.getCustomerName());
+            updateClause.set(transaction.customerName, dto.getCustomerName());
             isUpdated = true;
         }
         if (dto.getGoodsId() != null) {
             if(!dto.getGoodsId().equals(OldTransaction.getProductsId())){
                 isChanged = true;
             }
-            updateClause.set(transactionEntity.productsEntityId, dto.getGoodsId());
+            updateClause.set(transaction.productsId, dto.getGoodsId());
             isUpdated = true;
         }
         if (dto.getQuantity() != null) {
             if(!dto.getQuantity().equals(OldTransaction.getQuantity())){
                 isChanged = true;
             }
-            updateClause.set(transactionEntity.quantity, dto.getQuantity());
+            updateClause.set(transaction.quantity, dto.getQuantity());
             isUpdated = true;
         }
         if (dto.getDestination() != null) {
             if(!dto.getDestination().equals(OldTransaction.getDestination())){
                 isChanged = true;
             }
-            updateClause.set(transactionEntity.destination, dto.getDestination());
+            updateClause.set(transaction.destination, dto.getDestination());
             isUpdated = true;
         }
         if (dto.getImage() != null) {
             if(!dto.getImage().equals(OldTransaction.getImage())){
                 isChanged = true;
             }
-            updateClause.set(transactionEntity.image, dto.getImage());
+            updateClause.set(transaction.image, dto.getImage());
             isUpdated = true;
         }
         if (dto.getOrigin() != null) {
             if(!dto.getOrigin().getValue().equals(OldTransaction.getOrigin())){
                 isChanged = true;
             }
-            updateClause.set(transactionEntity.origin, dto.getOrigin().getValue());
+            updateClause.set(transaction.origin, dto.getOrigin().getValue());
             isUpdated = true;
         }
         if (dto.getTransactionTime() != null) {
             if(!dto.getTransactionTime().equals(OldTransaction.getTransactionTime())){
                 isChanged = true;
             }
-            updateClause.set(transactionEntity.transactionTime, dto.getTransactionTime());
+            updateClause.set(transaction.transactionTime, dto.getTransactionTime());
             isUpdated = true;
         }
 
         if (isUpdated) {
-            updateClause.set(transactionEntity.updatedAt, new Date());
+            updateClause.set(transaction.updatedAt, new Date());
         } else {
             throw new IllegalArgumentException("No data fields are updated!!!");
         }
@@ -147,7 +147,7 @@ public class TransactionRepoImpl extends BaseRepo implements TransactionRepoCust
         BooleanBuilder builder = initGetOneBuilder(id);
 
         return Optional.ofNullable(
-                query.from(transactionEntity)
+                query.from(transaction)
                 .where(builder)
                 .select(transactionProjection())
                 .fetchOne()
@@ -158,31 +158,31 @@ public class TransactionRepoImpl extends BaseRepo implements TransactionRepoCust
     public List<TransactionDto> getTransactionByFilter(int page, String warehouseId, Boolean origin, Date fromDate, Date toDate) {
 
         BooleanBuilder builder = new BooleanBuilder()
-                .and(transactionEntity.deleted.eq(false));
+                .and(transaction.deleted.eq(false));
 
         if (warehouseId != null) {
-            builder.and(productsEntity.warehouseId.eq(warehouseId));
+            builder.and(products.warehouseId.eq(warehouseId));
         }
 
         if (origin != null) {
-            builder.and(transactionEntity.origin.eq(origin));
+            builder.and(transaction.origin.eq(origin));
         }
 
         if (fromDate != null && toDate != null) {
-            builder.and(transactionEntity.createdAt.between(fromDate, toDate));
+            builder.and(transaction.createdAt.between(fromDate, toDate));
         } else if (fromDate != null) {
-            builder.and(transactionEntity.createdAt.goe(fromDate));
+            builder.and(transaction.createdAt.goe(fromDate));
         } else if (toDate != null) {
-            builder.and(transactionEntity.createdAt.loe(toDate));
+            builder.and(transaction.createdAt.loe(toDate));
         }
 
         long offset = (long) (page - 1) * Pagination.TEN.getSize();
 
-        return query.from(transactionEntity)
-                .leftJoin(productsEntity).on(productsEntity.id.eq(transactionEntity.productsEntityId))
+        return query.from(transaction)
+                .leftJoin(products).on(products.id.eq(transaction.productsId))
                 .where(builder)
                 .select(transactionProjection())
-                .orderBy(transactionEntity.updatedAt.desc())
+                .orderBy(transaction.updatedAt.desc())
                 .offset(offset)
                 .limit(Pagination.TEN.getSize())
                 .fetch();
@@ -193,24 +193,24 @@ public class TransactionRepoImpl extends BaseRepo implements TransactionRepoCust
     @Transactional
     public long deleteTransaction(String id) {
         BooleanBuilder builder = initGetOneBuilder(id);
-        return query.update(transactionEntity)
+        return query.update(transaction)
                 .where(builder)
-                .set(transactionEntity.deleted, true)
+                .set(transaction.deleted, true)
                 .execute();
     }
 
     @Override
-    public Float getQuantityByOrigin(String productsEntityId, Boolean origin , Date fromDate, Date toDate) {
+    public Float getQuantityByOrigin(String productsId, Boolean origin , Date fromDate, Date toDate) {
         BooleanBuilder builder = new BooleanBuilder()
-                .and(transactionEntity.origin.eq(origin))
-                .and(transactionEntity.productsEntityId.eq(productsEntityId));
+                .and(transaction.origin.eq(origin))
+                .and(transaction.productsId.eq(productsId));
         if (fromDate != null && toDate != null) {
-            builder.and(transactionEntity.createdAt.between(fromDate, toDate));
+            builder.and(transaction.createdAt.between(fromDate, toDate));
         }
 
-        Float totalQuantity = query.from(transactionEntity)
+        Float totalQuantity = query.from(transaction)
                 .where(builder)
-                .select(transactionEntity.quantity.sum())
+                .select(transaction.quantity.sum())
                 .fetchOne();
 
         return totalQuantity != null ? totalQuantity : 0f;

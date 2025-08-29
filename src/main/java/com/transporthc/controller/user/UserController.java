@@ -3,7 +3,7 @@ package com.transporthc.controller.user;
 import com.transporthc.dto.ExportExcelResponse;
 import com.transporthc.dto.user.UserDto;
 import com.transporthc.dto.BaseResponse;
-import com.transporthc.entity.user.UserEntity;
+import com.transporthc.entity.user.User;
 import com.transporthc.service.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
@@ -28,26 +28,26 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponse<UserEntity>> createUser(@Valid @RequestBody UserDto userDto) {
-        UserEntity createdUser = userService.createUser(userDto);
+    public ResponseEntity<BaseResponse<User>> createUser(@Valid @RequestBody UserDto userDto) {
+        User createdUser = userService.createUser(userDto);
         return ResponseEntity.ok(BaseResponse.ok(createdUser));
     }
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<BaseResponse<UserEntity>> updateUser(@PathVariable String id, @RequestBody UserDto updateUserDto) {
-        UserEntity updatedUser = userService.updateUser(id, updateUserDto);
+    public ResponseEntity<BaseResponse<User>> updateUser(@PathVariable String id, @RequestBody UserDto updateUserDto) {
+        User updatedUser = userService.updateUser(id, updateUserDto);
         return ResponseEntity.ok(BaseResponse.ok(updatedUser));
     }
 
     @GetMapping
-    public ResponseEntity<BaseResponse<List<UserEntity>>> getAllUsers(@RequestParam int page) {
-        List<UserEntity> users = userService.getAllUsers(page);
+    public ResponseEntity<BaseResponse<List<User>>> getAllUsers(@RequestParam int page) {
+        List<User> users = userService.getAllUsers(page);
         return ResponseEntity.ok(BaseResponse.ok(users));
     }
 
     @GetMapping("/get/{id}")
-    public ResponseEntity<BaseResponse<UserEntity>> getUserById(@PathVariable String id) {
-        UserEntity user = userService.getUserById(id);
+    public ResponseEntity<BaseResponse<User>> getUserById(@PathVariable String id) {
+        User user = userService.getUserById(id);
         return ResponseEntity.ok(BaseResponse.ok(user));
     }
 

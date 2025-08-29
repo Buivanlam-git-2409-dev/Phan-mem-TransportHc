@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.transporthc.dto.user.UserDto;
-import com.transporthc.entity.user.UserEntity;
+import com.transporthc.entity.user.User;
 import com.transporthc.enums.IDKey;
 import com.transporthc.utils.utils;
 
@@ -19,9 +19,9 @@ import lombok.RequiredArgsConstructor;
 public class UserMapper {
     private final PasswordEncoder passwordEncoder;
 
-    public UserEntity toUser(UserDto dto) {
+    public User toUser(UserDto dto) {
         if (dto == null) { return null; }
-        return UserEntity.builder()
+        return User.builder()
                 .id(utils.genID(IDKey.USER))
                 .fullName(dto.getFullName())
                 .phone(dto.getPhone())
@@ -35,7 +35,7 @@ public class UserMapper {
                 .build();
     }
 
-    public List<UserEntity> toUserList(List<UserDto> dtos) {
+    public List<User> toUserList(List<UserDto> dtos) {
         if(dtos == null || dtos.isEmpty()) {
             return Collections.emptyList();
         }

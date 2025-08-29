@@ -12,13 +12,13 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExpensesEntity extends BaseEntity{
+public class Expenses extends BaseEntity{
     @Id
     private String id;
-
+    // ma hanh trinh
     @Column(name = "schedule_id")
     private String scheduleId;
-
+    // loai chi phi
     @Column(name = "expenses_config_id")
     private String expensesConfigId;
 

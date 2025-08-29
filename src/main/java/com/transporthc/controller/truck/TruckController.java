@@ -37,15 +37,15 @@ public class TruckController {
                 BaseResponse.ok(truckService.getAllTrucks())
         );
     }
-
-    @GetMapping("/get_by_license/{license}")
+ /* 
+    @GetMapping("/get-by-license/{license}")
     public ResponseEntity<Object> getTruckByLicensePlate(@PathVariable String license) {
         return ResponseEntity.ok(
                 BaseResponse.ok(truckService.getTruckByLicensePlate(license))
         );
     }
-
-    @GetMapping("/get_by_type/{type}")
+*/
+    @GetMapping("/get-by-type/{type}")
     public ResponseEntity<Object> getTrucksByType(@PathVariable TruckTypeEnum type) {
         return ResponseEntity.ok(
                 BaseResponse.ok(truckService.getTrucksByType(type))
@@ -59,7 +59,7 @@ public class TruckController {
         );
     }
 
-    @GetMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public ResponseEntity<Object> deleteTruck(@PathVariable Integer id) {
         return ResponseEntity.ok(
                 BaseResponse.ok(truckService.deleteTruck(id))

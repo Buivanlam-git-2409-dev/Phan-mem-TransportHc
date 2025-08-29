@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.transporthc.dto.ExportExcelResponse;
 import com.transporthc.dto.user.UserDto;
-import com.transporthc.entity.user.UserEntity;
+import com.transporthc.entity.user.User;
 import com.transporthc.enums.permission.PermissionKeyEnum;
 import com.transporthc.enums.permission.PermissionTypeEnum;
 import com.transporthc.exception.define.NotFoundException;
@@ -37,16 +37,16 @@ public class UserServiceImpl extends BaseService implements UserService{
     private final PermissionTypeEnum type = PermissionTypeEnum.USERS;
 
     @Override
-    public UserEntity createUser(UserDto userDto) {
-        UserEntity user = userMapper.toUser(userDto);
+    public User createUser(UserDto userDto) {
+        User user = userMapper.toUser(userDto);
         return userRepo.save(user);
     }
 
     @Override
-    public UserEntity updateUser(String id, UserDto updateUserDTO) {
+    public User updateUser(String id, UserDto updateUserDTO) {
         checkPermission(type, PermissionKeyEnum.WRITE);
 
-        UserEntity existingUser = userRepo.getUserById(id);
+        User existingUser = userRepo.getUserById(id);
         if (existingUser == null) {
             throw new NotFoundException("User not found with ID: " + id);
         }
@@ -65,15 +65,15 @@ public class UserServiceImpl extends BaseService implements UserService{
     }
 
     @Override
-    public List<UserEntity> getAllUsers(int page) {
+    public List<User> getAllUsers(int page) {
         checkPermission(type, PermissionKeyEnum.VIEW);
         return userRepo.getAll(page);
     }
 
     @Override
-    public UserEntity getUserById(String id) {
+    public User getUserById(String id) {
         checkPermission(type, PermissionKeyEnum.VIEW);
-        UserEntity user = userRepo.getUserById(id);
+        User user = userRepo.getUserById(id);
         if (user == null) {
             throw new NotFoundException("User not found with ID: " + id);
         }
@@ -99,14 +99,14 @@ public class UserServiceImpl extends BaseService implements UserService{
     }
 
     @Override
-    public List<UserEntity> importUserData(MultipartFile importFile) {
+    public List<User> importUserData(MultipartFile importFile) {
 
         checkPermission(type, PermissionKeyEnum.WRITE);
 
         Workbook workbook = FileFactory.getWorkbookStream(importFile);
         List<UserDto> userDTOList = ExcelUtils.getImportData(workbook, ImportConfig.userImport);
 
-        List<UserEntity> users = userMapper.toUserList(userDTOList);
+        List<User> users = userMapper.toUserList(userDTOList);
         return userRepo.saveAll(users);
     }
 

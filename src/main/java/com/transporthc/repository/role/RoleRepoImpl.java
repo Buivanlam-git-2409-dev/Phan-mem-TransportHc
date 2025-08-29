@@ -1,6 +1,6 @@
 package com.transporthc.repository.role;
 
-import com.transporthc.entity.role.RoleEntity;
+import com.transporthc.entity.role.Role;
 import com.transporthc.repository.BaseRepo;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -18,13 +18,13 @@ public class RoleRepoImpl extends BaseRepo implements RoleRepoCustom {
     }
 
     @Override
-    public RoleEntity findRoleById(Integer id) {
+    public Role findRoleById(Integer id) {
         return query.selectFrom(roleEntity)
                 .where(roleEntity.id.eq(id))
                 .fetchOne();
     }
 
-    public List<RoleEntity> getAll(){
+    public List<Role> getAll(){
         return query.selectFrom(roleEntity).fetch();
     }
 

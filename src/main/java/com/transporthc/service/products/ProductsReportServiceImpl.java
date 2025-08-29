@@ -2,8 +2,8 @@ package com.transporthc.service.products;
 
 import com.transporthc.dto.products.ProductsReportDto;
 import com.transporthc.dto.ExportExcelResponse;
-import com.transporthc.entity.products.ProductsEntity;
-import com.transporthc.entity.products.ProductsReportEntity;
+import com.transporthc.entity.products.Products;
+import com.transporthc.entity.products.ProductsReport;
 import com.transporthc.enums.permission.PermissionKeyEnum;
 import com.transporthc.enums.permission.PermissionTypeEnum;
 import com.transporthc.exception.define.NotFoundException;
@@ -36,10 +36,10 @@ public class ProductsReportServiceImpl extends BaseService implements ProductsRe
     public void createProductsReport(String period) {
         Date[] range = utils.createDateRange(period);
 
-        List<ProductsEntity> productsList = productsRepo.findAll();
-        for (ProductsEntity products : productsList) {
-            ProductsReportEntity productsReportMinusMonths = productsReportRepo.getProductReport(products.getId(), range[0], range[1]);
-            ProductsReportEntity productsReportCurrentMonths = new ProductsReportEntity();
+        List<Products> productsList = productsRepo.findAll();
+        for (Products products : productsList) {
+            ProductsReport productsReportMinusMonths = productsReportRepo.getProductReport(products.getId(), range[0], range[1]);
+            ProductsReport productsReportCurrentMonths = new ProductsReport();
             float inboundQuantity = transactionRepo.getQuantityByOrigin(products.getId(), true, range[0], range[1]);
             float outboundQuantity = transactionRepo.getQuantityByOrigin(products.getId(), false, range[0], range[1]);
             if(productsReportMinusMonths == null) {

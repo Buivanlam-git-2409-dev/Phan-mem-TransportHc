@@ -4,7 +4,7 @@ import com.transporthc.dto.ExportExcelResponse;
 import com.transporthc.dto.expenses.ExpensesDto;
 import com.transporthc.dto.expenses.ExpensesIncurredDto;
 import com.transporthc.dto.expenses.ExpensesReportDto;
-import com.transporthc.entity.expenses.ExpensesEntity;
+import com.transporthc.entity.expenses.Expenses;
 import com.transporthc.enums.attached.AttachedTypeEnum;
 import com.transporthc.enums.expenses.ExpensesStatusEnum;
 import com.transporthc.enums.permission.PermissionKeyEnum;
@@ -73,7 +73,7 @@ public class ExpensesServiceImpl extends BaseService implements ExpensesService{
     public ExpensesDto create(ExpensesDto dto) throws ServerException {
         checkPermission(type, PermissionKeyEnum.WRITE);
 
-        ExpensesEntity expenses = createExpensesFromDto(dto);
+        Expenses expenses = createExpensesFromDto(dto);
         attachImages(expenses.getId(), dto);
 
         String notifyMsg = "Có một chi phí được tạo mới cần được phê duyệt lúc " + new Date();
@@ -91,8 +91,8 @@ public class ExpensesServiceImpl extends BaseService implements ExpensesService{
         attachedService.addAttachedImages(referenceID, AttachedTypeEnum.ATTACHED_OF_EXPENSES, attachedImagePaths);
     }
 
-    private ExpensesEntity createExpensesFromDto(ExpensesDto dto) {
-        ExpensesEntity expenses = expensesMapper.toExpensesEntity(dto);
+    private Expenses createExpensesFromDto(ExpensesDto dto) {
+        Expenses expenses = expensesMapper.toExpensesEntity(dto);
         expensesRepo.save(expenses);
         return expenses;
     }
@@ -101,7 +101,7 @@ public class ExpensesServiceImpl extends BaseService implements ExpensesService{
     public ExpensesDto update(String id, ExpensesDto dto) {
         checkPermission(type, PermissionKeyEnum.WRITE);
 
-        ExpensesEntity expenses = expensesRepo.findById(id)
+        Expenses expenses = expensesRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Chi phí cần cập nhật không tồn tại!"));
         checkUpdateConditions(id);
 
@@ -118,7 +118,7 @@ public class ExpensesServiceImpl extends BaseService implements ExpensesService{
         }
     }
 
-    private void updateExpensesFromDto(ExpensesEntity expenses, ExpensesDto dto) {
+    private void updateExpensesFromDto(Expenses expenses, ExpensesDto dto) {
         expensesMapper.updateExpenses(expenses, dto);
         expensesRepo.save(expenses);
     }
@@ -182,14 +182,14 @@ public class ExpensesServiceImpl extends BaseService implements ExpensesService{
     }
 
     @Override
-    public List<ExpensesEntity> importExpensesData(MultipartFile importFile) {
+    public List<Expenses> importExpensesData(MultipartFile importFile) {
 
         checkPermission(type, PermissionKeyEnum.WRITE);
 
         Workbook workbook = FileFactory.getWorkbookStream(importFile);
         List<ExpensesDto> expensesDtoList = ExcelUtils.getImportData(workbook, ImportConfig.expensesImport);
 
-        List<ExpensesEntity> expenses = expensesMapper.toExpensesEntities(expensesDtoList);
+        List<Expenses> expenses = expensesMapper.toExpensesEntities(expensesDtoList);
 
         return expensesRepo.saveAll(expenses);
     }

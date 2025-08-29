@@ -9,16 +9,16 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import com.transporthc.dto.expenses.ExpensesDto;
-import com.transporthc.entity.expenses.ExpensesEntity;
+import com.transporthc.entity.expenses.Expenses;
 import com.transporthc.enums.IDKey;
 import com.transporthc.enums.expenses.ExpensesStatusEnum;
 
 @Component
 public class ExpensesMapper {
 
-    public ExpensesEntity toExpensesEntity(ExpensesDto dto){
+    public Expenses toExpensesEntity(ExpensesDto dto){
         if(dto == null) return null;
-        return ExpensesEntity.builder()
+        return Expenses.builder()
         .id(utils.genID(IDKey.EXPENSES))
         .scheduleId(dto.getScheduleId())
         .expensesConfigId(dto.getExpensesConfigId())
@@ -28,14 +28,14 @@ public class ExpensesMapper {
         .build();
     }
 
-    public List<ExpensesEntity> toExpensesEntities(List<ExpensesDto> dtos){
+    public List<Expenses> toExpensesEntities(List<ExpensesDto> dtos){
         if(dtos == null || dtos.isEmpty()){
             return Collections.emptyList();
         }
         return dtos.stream().map(this::toExpensesEntity).collect(Collectors.toList());
     }
 
-    public void updateExpenses(ExpensesEntity exe,ExpensesDto exdto){
+    public void updateExpenses(Expenses exe,ExpensesDto exdto){
         if(exdto==null) return;
         if(exdto.getScheduleId()!=null&&!exdto.getScheduleId().equals(exe.getScheduleId())){
             exe.setScheduleId(exdto.getScheduleId());

@@ -1,7 +1,7 @@
 package com.transporthc.service.schedule.scheduleconfig;
 import com.transporthc.dto.ExportExcelResponse;
 import com.transporthc.dto.schedule.ScheduleConfigDto;
-import com.transporthc.entity.schedule.ScheduleConfigEntity;
+import com.transporthc.entity.schedule.ScheduleConfig;
 import com.transporthc.enums.permission.PermissionKeyEnum;
 import com.transporthc.enums.permission.PermissionTypeEnum;
 import com.transporthc.exception.define.InvalidParameterException;
@@ -56,7 +56,7 @@ public class ScheduleConfigServiceImpl extends BaseService implements ScheduleCo
     @Override
     public ScheduleConfigDto create(ScheduleConfigDto dto) {
         checkPermission(type, PermissionKeyEnum.WRITE);
-        ScheduleConfigEntity config = scheduleConfigMapper.toScheduleConfig(dto);
+        ScheduleConfig config = scheduleConfigMapper.toScheduleConfig(dto);
         scheduleConfigRepo.save(config);
         return getByID(config.getId());
     }
@@ -65,7 +65,7 @@ public class ScheduleConfigServiceImpl extends BaseService implements ScheduleCo
     public ScheduleConfigDto update(String id, ScheduleConfigDto dto) {
         checkPermission(type, PermissionKeyEnum.WRITE);
 
-        ScheduleConfigEntity config = scheduleConfigRepo.findById(id)
+        ScheduleConfig config = scheduleConfigRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Cấu hình lịch trình không tồn tại hoặc đã bị xóa trước đó!"));
 
         scheduleConfigMapper.updateScheduleConfig(config, dto);
@@ -87,14 +87,14 @@ public class ScheduleConfigServiceImpl extends BaseService implements ScheduleCo
     }
 
     @Override
-    public List<ScheduleConfigEntity> importScheduleConfigData(MultipartFile importFile) {
+    public List<ScheduleConfig> importScheduleConfigData(MultipartFile importFile) {
 
         checkPermission(type, PermissionKeyEnum.WRITE);
 
         Workbook workbook = FileFactory.getWorkbookStream(importFile);
         List<ScheduleConfigDto> scheduleConfigDtoList = ExcelUtils.getImportData(workbook, ImportConfig.scheduleConfigImport);
 
-        List<ScheduleConfigEntity> scheduleConfig = scheduleConfigMapper.toScheduleConfigList(scheduleConfigDtoList);
+        List<ScheduleConfig> scheduleConfig = scheduleConfigMapper.toScheduleConfigList(scheduleConfigDtoList);
 
         return scheduleConfigRepo.saveAll(scheduleConfig);
     }

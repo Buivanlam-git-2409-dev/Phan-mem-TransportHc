@@ -3,15 +3,14 @@ package com.transporthc.service.truck;
 import com.transporthc.dto.ExportExcelResponse;
 import com.transporthc.dto.schedule.ScheduleDto;
 import com.transporthc.dto.truck.TruckDto;
-import com.transporthc.entity.schedule.ScheduleEntity;
-import com.transporthc.entity.truck.TruckEntity;
+import com.transporthc.entity.schedule.Schedule;
+import com.transporthc.entity.truck.Truck;
 import com.transporthc.enums.permission.PermissionKeyEnum;
 import com.transporthc.enums.permission.PermissionTypeEnum;
 import com.transporthc.enums.role.UserRoleEnum;
 import com.transporthc.enums.truck.TruckTypeEnum;
 import com.transporthc.exception.define.ConflictException;
 import com.transporthc.exception.define.NotFoundException;
-import com.transporthc.mapper.schedule.ScheduleMapper;
 import com.transporthc.mapper.truck.TruckMapper;
 import com.transporthc.repository.schedule.schedule.ScheduleRepo;
 import com.transporthc.repository.truck.TruckRepo;
@@ -47,7 +46,7 @@ public class TruckServiceImpl extends BaseService implements TruckService {
         checkPermission(type, PermissionKeyEnum.WRITE);
         checkDriverRole(userRepo.getUserById(truckDto.getDriverId()).getRoleId());
 
-        TruckEntity truck = mapper.toTruck(truckDto);
+        Truck truck = mapper.toTruck(truckDto);
         repository.save(truck);
         return repository.getTruckById(truck.getId()).get();
     }
@@ -67,19 +66,19 @@ public class TruckServiceImpl extends BaseService implements TruckService {
         }
         return trucks;
     }
-
+/*
     @Override
     public TruckDto getTruckByLicensePlate(String licensePlate) {
         checkPermission(type, PermissionKeyEnum.VIEW);
         return repository.getTruckByLicense(licensePlate)
                 .orElseThrow(() -> new NotFoundException("Xe có biển số " + licensePlate + " không tồn tại!"));
     }
-
+*/
 @Override
 @Transactional
 public TruckDto updateTruck(Integer id, TruckDto dto) {
     checkPermission(type, PermissionKeyEnum.WRITE);
-    TruckEntity existingTruck = mapper.toTruck(repository.getTruckById(id)
+    Truck existingTruck = mapper.toTruck(repository.getTruckById(id)
             .orElseThrow(() -> new NotFoundException("Không tìm thấy thông tin xe cần tìm!")));
     // Cập nhật các trường từ body (chỉ cập nhật nếu không null)
     if (dto.getDriverId() != null) {
@@ -98,7 +97,7 @@ public TruckDto updateTruck(Integer id, TruckDto dto) {
         if (!schedules.isEmpty()) {
             for (ScheduleDto scheduleDto : schedules) {
                 // Lấy bản ghi Schedule hiện tại từ DB
-                ScheduleEntity existingSchedule = scheduleRepo.findById(scheduleDto.getId())
+                Schedule existingSchedule = scheduleRepo.findById(scheduleDto.getId())
                         .orElseThrow(() -> new NotFoundException("Không tìm thấy lịch trình với ID: " + scheduleDto.getId()));
                 if(existingSchedule.getTruckLicense().equals(oldLicense)) {
                     existingSchedule.setTruckLicense(dto.getLicensePlate());
@@ -137,7 +136,7 @@ public TruckDto updateTruck(Integer id, TruckDto dto) {
     }
 
     @Override
-    public List<TruckEntity> importTruckData(MultipartFile importFile) {
+    public List<Truck> importTruckData(MultipartFile importFile) {
 
         checkPermission(type, PermissionKeyEnum.WRITE);
 
@@ -148,7 +147,7 @@ public TruckDto updateTruck(Integer id, TruckDto dto) {
             checkDriverRole(userRepo.getUserById(truckDto.getDriverId()).getRoleId());
         }
 
-        List<TruckEntity> trucks = mapper.toTruckList(truckDtoList);
+        List<Truck> trucks = mapper.toTruckList(truckDtoList);
 
         // Lưu tất cả các thực thể vào cơ sở dữ liệu và trả về danh sách đã lưu
         return repository.saveAll(trucks);

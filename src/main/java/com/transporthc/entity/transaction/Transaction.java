@@ -15,10 +15,10 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "transactions")
-public class TransactionEntity extends BaseEntity {
+public class Transaction extends BaseEntity {
     @Id
     private String id;
-
+    // tham chiếu với người dùng
     @Column(name = "ref_user_id")
     private String refUserId;
 

@@ -2,7 +2,7 @@ package com.transporthc.service.truck;
 
 import com.transporthc.dto.ExportExcelResponse;
 import com.transporthc.dto.truck.TruckDto;
-import com.transporthc.entity.truck.TruckEntity;
+import com.transporthc.entity.truck.Truck;
 import com.transporthc.enums.truck.TruckTypeEnum;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,9 +12,9 @@ public interface TruckService {
     TruckDto createTruck(TruckDto truckDto);
     List<TruckDto> getAllTrucks();
     List<TruckDto> getTrucksByType(TruckTypeEnum type);
-    TruckDto getTruckByLicensePlate(String licensePlate);
+    //TruckDto getTruckByLicensePlate(String licensePlate);
     TruckDto updateTruck(Integer id, TruckDto truckDto);
     long deleteTruck(Integer id);
-    List<TruckEntity> importTruckData(MultipartFile importFile);
+    List<Truck> importTruckData(MultipartFile importFile);
     ExportExcelResponse exportTruckData() throws Exception;
 }

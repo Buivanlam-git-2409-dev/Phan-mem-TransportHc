@@ -12,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class ProductsEntity extends BaseEntity{
+public class Products extends BaseEntity{
     @Id
     private String id;
 

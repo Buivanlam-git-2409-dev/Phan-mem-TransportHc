@@ -19,7 +19,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "schedule_configs")
-public class ScheduleConfigEntity extends BaseEntity{
+public class ScheduleConfig extends BaseEntity{
     @Id
     private String id;
 

@@ -15,7 +15,7 @@ import com.transporthc.dto.transaction.TransactionDto;
 import com.transporthc.dto.truck.TruckDto;
 import com.transporthc.dto.user.UserDto;
 import com.transporthc.dto.warehouse.WarehousesDto;
-import com.transporthc.entity.schedule.ScheduleConfigEntity;
+import com.transporthc.entity.schedule.ScheduleConfig;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -57,7 +57,7 @@ public class ExportConfig {
     public static final ExportConfig expensesExport = createExportConfig(ExpensesDto.class, 0, 1);
     public static final ExportConfig expensesConfigExport = createExportConfig(ExpensesConfigDto.class, 0, 1);
     public static final ExportConfig summarySalaryExport = createExportConfig(SummarySalaryDto.class, 0, 1);
-    public static final ExportConfig scheduleConfigExport = createExportConfig(ScheduleConfigEntity.class, 0, 1);
+    public static final ExportConfig scheduleConfigExport = createExportConfig(ScheduleConfig.class, 0, 1);
     public static final ExportConfig scheduleExport = createExportConfig(ScheduleDto.class, 0, 1);
     public static final ExportConfig truckExport = createExportConfig(TruckDto.class, 0, 1);
     public static final ExportConfig userExport = createExportConfig(UserDto.class, 0, 1);

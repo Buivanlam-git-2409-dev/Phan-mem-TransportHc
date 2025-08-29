@@ -7,16 +7,16 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import com.transporthc.dto.schedule.ScheduleDto;
-import com.transporthc.entity.schedule.ScheduleEntity;
+import com.transporthc.entity.schedule.Schedule;
 import com.transporthc.enums.IDKey;
 import com.transporthc.enums.schedule.ScheduleStatusEnum;
 import com.transporthc.utils.utils;
 
 @Component
 public class ScheduleMapper {
-    public ScheduleEntity toSchedule(ScheduleDto dto) {
+    public Schedule toSchedule(ScheduleDto dto) {
         if (dto == null) return null;
-        return ScheduleEntity.builder()
+        return Schedule.builder()
                 .id(utils.genID(IDKey.SCHEDULE))
                 .scheduleConfigId(dto.getScheduleConfigId().isBlank() ? null : dto.getScheduleConfigId().trim())
                 .truckLicense(dto.getTruckLicense().trim())
@@ -28,14 +28,14 @@ public class ScheduleMapper {
                 .build();
     }
 
-    public List<ScheduleEntity> toScheduleList(List<ScheduleDto> dtos) {
+    public List<Schedule> toScheduleList(List<ScheduleDto> dtos) {
         if (dtos == null || dtos.isEmpty()) {
             return Collections.emptyList();
         }
         return dtos.stream().map(this::toSchedule).collect(Collectors.toList());
     }
 
-    public void updateSchedule(ScheduleEntity schedule, ScheduleDto dto) {
+    public void updateSchedule(Schedule schedule, ScheduleDto dto) {
         if (dto == null) return;
 
         if (dto.getScheduleConfigId() != null && !schedule.getScheduleConfigId().equals(dto.getScheduleConfigId())) {

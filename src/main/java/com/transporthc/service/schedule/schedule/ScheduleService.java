@@ -4,7 +4,7 @@ import com.transporthc.dto.attached.AttachedImgPathDto;
 import com.transporthc.dto.ExportExcelResponse;
 import com.transporthc.dto.schedule.ScheduleDto;
 import com.transporthc.dto.schedule.ScheduleSalaryDto;
-import com.transporthc.entity.schedule.ScheduleEntity;
+import com.transporthc.entity.schedule.Schedule;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.rmi.ServerException;
@@ -19,6 +19,6 @@ public interface ScheduleService {
     long markComplete(String id, AttachedImgPathDto attachedImgPathsDto) throws ServerException;
     List<ScheduleDto> report(String license, String period);
     List<ScheduleSalaryDto> exportScheduleSalary (String driverId, String period);
-    List<ScheduleEntity> importScheduleData(MultipartFile importFile);
+    List<Schedule> importScheduleData(MultipartFile importFile);
     ExportExcelResponse exportSchedule(String driverId, String truckLicense, String fromDate, String toDate) throws Exception;
 }

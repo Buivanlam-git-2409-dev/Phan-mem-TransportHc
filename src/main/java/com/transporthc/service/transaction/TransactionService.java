@@ -2,7 +2,7 @@ package com.transporthc.service.transaction;
 
 import com.transporthc.dto.ExportExcelResponse;
 import com.transporthc.dto.transaction.TransactionDto;
-import com.transporthc.entity.transaction.TransactionEntity;
+import com.transporthc.entity.transaction.Transaction;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +16,6 @@ public interface TransactionService {
     String deleteTransaction(String id);
     TransactionDto getTransactionById(String id);
     List<TransactionDto> getTransactionByFilter(int page, String warehouseId, Boolean origin, String fromDateStr, String toDateStr);
-    List<TransactionEntity> importTransactionData(MultipartFile importFile);
+    List<Transaction> importTransactionData(MultipartFile importFile);
     ExportExcelResponse exportTransaction(int page, String warehouseId, Boolean origin, String fromDate, String toDate) throws Exception;
 }

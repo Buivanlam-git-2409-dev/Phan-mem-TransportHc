@@ -4,7 +4,7 @@ import com.transporthc.dto.authentication.AuthRequest;
 import com.transporthc.dto.user.UserDto;
 import com.transporthc.dto.BaseResponse;
 import com.transporthc.dto.authentication.AuthResponse;
-import com.transporthc.entity.user.UserEntity;
+import com.transporthc.entity.user.User;
 import com.transporthc.service.authentication.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +26,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<BaseResponse<UserEntity>> registerUser(@Valid @RequestBody UserDto userDto) {
-        UserEntity createdUser = authService.register(userDto);
+    public ResponseEntity<BaseResponse<User>> registerUser(@Valid @RequestBody UserDto userDto) {
+        User createdUser = authService.register(userDto);
         return ResponseEntity.ok(BaseResponse.ok(createdUser));
     }
 

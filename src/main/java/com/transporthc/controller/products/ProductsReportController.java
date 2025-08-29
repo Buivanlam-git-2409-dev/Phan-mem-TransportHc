@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products_report")
+@RequestMapping("/products-report")
 @RequiredArgsConstructor
 public class ProductsReportController {
 

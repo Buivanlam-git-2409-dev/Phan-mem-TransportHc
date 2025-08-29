@@ -2,7 +2,7 @@ package com.transporthc.service.expenses.expensesConfig;
 
 import com.transporthc.dto.ExportExcelResponse;
 import com.transporthc.dto.expenses.ExpensesConfigDto;
-import com.transporthc.entity.expenses.ExpenseConfigEntity;
+import com.transporthc.entity.expenses.ExpenseConfig;
 import com.transporthc.enums.permission.PermissionKeyEnum;
 import com.transporthc.enums.permission.PermissionTypeEnum;
 import com.transporthc.exception.define.NotFoundException;
@@ -46,7 +46,7 @@ public class ExpensesConfigServiceImpl extends BaseService implements ExpensesCo
     @Override
     public ExpensesConfigDto create(ExpensesConfigDto dto) {
         checkPermission(type, PermissionKeyEnum.WRITE);
-        ExpenseConfigEntity config = expensesConfigMapper.toExpenseConfigEntity(dto);
+        ExpenseConfig config = expensesConfigMapper.toExpenseConfigEntity(dto);
         expensesConfigRepo.save(config);
         return getByID(config.getId());
     }
@@ -55,7 +55,7 @@ public class ExpensesConfigServiceImpl extends BaseService implements ExpensesCo
     public ExpensesConfigDto update(String id, ExpensesConfigDto dto) {
         checkPermission(type, PermissionKeyEnum.WRITE);
 
-        ExpenseConfigEntity config = expensesConfigRepo.findById(id)
+        ExpenseConfig config = expensesConfigRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Cấu hình chi phí không tồn tại!"));
 
         expensesConfigMapper.updateExpensesConfig(config, dto);
@@ -75,14 +75,14 @@ public class ExpensesConfigServiceImpl extends BaseService implements ExpensesCo
     }
 
     @Override
-    public List<ExpenseConfigEntity> importExpensesConfigData(MultipartFile importFile) {
+    public List<ExpenseConfig> importExpensesConfigData(MultipartFile importFile) {
 
         checkPermission(type, PermissionKeyEnum.WRITE);
 
         Workbook workbook = FileFactory.getWorkbookStream(importFile);
         List<ExpensesConfigDto> expensesConfigDTOList = ExcelUtils.getImportData(workbook, ImportConfig.expensesConfigImport);
 
-        List<ExpenseConfigEntity> expensesConfigs = expensesConfigMapper.toExpenseConfigEntitiesList(expensesConfigDTOList);
+        List<ExpenseConfig> expensesConfigs = expensesConfigMapper.toExpenseConfigEntitiesList(expensesConfigDTOList);
 
         // Lưu tất cả các thực thể vào cơ sở dữ liệu và trả về danh sách đã lưu
         return expensesConfigRepo.saveAll(expensesConfigs);

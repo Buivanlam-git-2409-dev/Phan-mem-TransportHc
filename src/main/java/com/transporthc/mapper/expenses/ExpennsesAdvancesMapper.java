@@ -3,13 +3,13 @@ package com.transporthc.mapper.expenses;
 import org.springframework.stereotype.Component;
 
 import com.transporthc.dto.expenses.ExpensesAdvancesDto;
-import com.transporthc.entity.expenses.ExpenseAdvancesEntity;
+import com.transporthc.entity.expenses.ExpenseAdvances;
 
 @Component
 public class ExpennsesAdvancesMapper {
-    public ExpenseAdvancesEntity toExpenseAdvancesEntity(ExpensesAdvancesDto dto){
+    public ExpenseAdvances toExpenseAdvancesEntity(ExpensesAdvancesDto dto){
         if(dto==null) return null;
-        return ExpenseAdvancesEntity.builder()
+        return ExpenseAdvances.builder()
         .driverId(dto.getDriverId())
         .period(dto.getPeriod())
         .advance(dto.getAdvance())
@@ -18,7 +18,7 @@ public class ExpennsesAdvancesMapper {
         .build();
     }
 
-    public void updateExpenseAdvance(Integer id, ExpenseAdvancesEntity expenseAdvances, ExpensesAdvancesDto dto) {
+    public void updateExpenseAdvance(Integer id, ExpenseAdvances expenseAdvances, ExpensesAdvancesDto dto) {
         if (dto == null || expenseAdvances == null) return;
         expenseAdvances.setId(id);
         expenseAdvances.setDriverId(dto.getDriverId());

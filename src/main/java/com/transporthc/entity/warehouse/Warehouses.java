@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WarehousesEntity extends BaseEntity{
+public class Warehouses extends BaseEntity{
     @Id
     private String id;
 

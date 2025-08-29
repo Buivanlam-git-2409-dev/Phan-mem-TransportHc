@@ -12,23 +12,23 @@ import lombok.*;
 @Entity
 @Table(name = "expense_advances")
 
-public class ExpenseAdvancesEntity extends BaseEntity {
+public class ExpenseAdvances extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
+    // ma tai xe
     @Column(name = "driver_id")
     private String driverId;
-
+    // ung truoc
     @Column(name = "period")
     private String period;
-
+    // tien them
     @Column(name = "advance")
     private Float advance;
-
+    // luong co ban
     @Column(name = "remaining_balance")
     private Float remainingBalance;
-
+    // ghi chu
     @Column(name = "note")
     private String note;
 }

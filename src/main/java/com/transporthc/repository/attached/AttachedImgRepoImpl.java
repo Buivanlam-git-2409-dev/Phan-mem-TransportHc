@@ -8,7 +8,7 @@ import com.transporthc.repository.BaseRepo;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
-import static com.transporthc.entity.attached.QAttachedImgEntity.attachedImgEntity;
+import static com.transporthc.entity.attached.QAttachedImg.attachedImg;
 
 public class AttachedImgRepoImpl extends BaseRepo implements AttachedImgRepoCustom{
     public AttachedImgRepoImpl(EntityManager entityManager){
@@ -19,9 +19,9 @@ public class AttachedImgRepoImpl extends BaseRepo implements AttachedImgRepoCust
     @Modifying
     public long deleteAttachedImgs(String referenceId, String[] attachedImgPaths){
         BooleanBuilder builder = new BooleanBuilder()
-        .and(attachedImgEntity.referenceId.eq(referenceId))
-        .and(attachedImgEntity.imgPath.in(attachedImgPaths));
+        .and(attachedImg.referenceId.eq(referenceId))
+        .and(attachedImg.imgPath.in(attachedImgPaths));
 
-        return query.delete(attachedImgEntity).where(builder).excute();
+        return query.delete(attachedImg).where(builder).excute();
     }
 }

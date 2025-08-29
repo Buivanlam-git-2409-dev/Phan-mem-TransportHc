@@ -21,7 +21,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "schedules")
-public class ScheduleEntity extends BaseEntity{
+public class Schedule extends BaseEntity{
     @Id
     private String id;
 

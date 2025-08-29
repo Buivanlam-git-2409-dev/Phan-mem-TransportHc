@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.transporthc.entity.user.UserEntity;
+import com.transporthc.entity.user.User;
 import com.transporthc.repository.user.UserRepo;
 
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepo.findByUsername(username);
+        User user = userRepo.findByUsername(username);
         if (user == null || user.getStatus() != 1) { // Giả sử status=1 là active
             throw new UsernameNotFoundException("Không tìm thấy người dùng với tên đăng nhập: " + username);
         }

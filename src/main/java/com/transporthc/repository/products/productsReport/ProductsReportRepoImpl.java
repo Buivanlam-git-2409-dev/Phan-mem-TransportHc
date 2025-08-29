@@ -7,7 +7,7 @@ import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPAExpressions;
 import com.transporthc.dto.products.ProductsReportDto;
-import com.transporthc.entity.products.ProductsReportEntity;
+import com.transporthc.entity.products.ProductsReport;
 import com.transporthc.repository.BaseRepo;
 import com.transporthc.repository.products.products.ProductsRepoCustom;
 
@@ -30,7 +30,7 @@ public class ProductsReportRepoImpl extends BaseRepo implements ProductsRepoCust
     }
 
     @Override
-    public ProductsReportEntity getProductReport(String productsId, Date fromdate,Date toDate){
+    public ProductsReport getProductReport(String productsId, Date fromdate,Date toDate){
         BooleanBuilder builder = initBuilder(fromdate, toDate)
         .and(productsReportEntity.productsId.eq(productsId));
 

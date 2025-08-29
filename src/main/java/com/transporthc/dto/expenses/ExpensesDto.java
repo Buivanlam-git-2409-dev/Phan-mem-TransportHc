@@ -15,10 +15,10 @@ import java.util.Date;
 public class ExpensesDto {
     @ExportColumn(name = "Mã chi phí")
     private String id;
-
+    @ExportColumn(name = "Mã tài xế")
     private String driverId;
-    @ExportColumn(name = "Tài xế")
-    private String driverName;
+    // @ExportColumn(name = "Tài xế")
+    // private String driverName;
 
     @NotBlank(message = "Loại chi phí không được để trống!")
     private String expensesConfigId;
@@ -46,18 +46,16 @@ public class ExpensesDto {
     private Date createdAt;
     private Date updatedAt;
 
-    public ExpensesDto(String driverId, String driverName, String expensesConfigId, String expensesConfigType, Float amount) {
+    public ExpensesDto(String driverId, String expensesConfigId, String expensesConfigType, Float amount) {
         this.driverId = driverId;
-        this.driverName = driverName;
         this.expensesConfigId = expensesConfigId;
         this.expensesConfigType = expensesConfigType;
         this.amount = amount;
     }
 
-    public ExpensesDto(String id, String driverId, String driverName, String expensesConfigId, String expensesConfigType, Float amount, String note, String attachedPaths, String scheduleId, Integer status, Date createdAt, Date updatedAt) {
+    public ExpensesDto(String id, String driverId, String expensesConfigId, String expensesConfigType, Float amount, String note, String attachedPaths, String scheduleId, Integer status, Date createdAt, Date updatedAt) {
         this.id = id;
         this.driverId = driverId;
-        this.driverName = driverName;
         this.expensesConfigId = expensesConfigId;
         this.expensesConfigType = expensesConfigType;
         this.amount = amount;
